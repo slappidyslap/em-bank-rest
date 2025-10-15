@@ -1,5 +1,7 @@
 package kg.musabaev.em_bank_rest.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
 import kg.musabaev.em_bank_rest.entity.Card;
@@ -21,19 +23,21 @@ public class CardController {
 
     // админ
     @PostMapping
-    public ResponseEntity<GetCreateSingleCardResponse> create(@RequestBody CreateCardRequest dto) {
+    public ResponseEntity<GetCreateSingleCardResponse> create(
+            @Valid @RequestBody CreateCardRequest dto) {
         return ResponseEntity.ok(cardService.create(dto.userId()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetCreateSingleCardResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<GetCreateSingleCardResponse> getById(
+            @Valid @Positive(message = "${app.msg.id_positive}") @PathVariable Long id) {
         return ResponseEntity.ok(cardService.getById(id));
     }
 
     @GetMapping
     public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(
             String status,
-            Long userId,
+            @Valid @Positive(message = "${app.msg.user_id_positive}") Long userId,
             Pageable pageable) {
         Specification<Card> spec = CardSpecification.build(status, userId);
         return ResponseEntity.ok(cardService.getAllCards(spec, pageable));
@@ -41,7 +45,8 @@ public class CardController {
 
     // админ
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(
+            @Valid @Positive(message = "${app.msg.id_positive}") @PathVariable Long id) {
         cardService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,21 +1,62 @@
 package kg.musabaev.em_bank_rest.exception;
 
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler({CardNotFoundException.class, UserNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    void handleResourceNotFound() {
+    ResponseEntity<Map<String, String>> handleResourceNotFound(Exception ex) {
+        return response(ex.getMessage(), NOT_FOUND);
     }
 
     @ExceptionHandler(FieldNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    void handleFieldNotValid() {// TODO кастомный респонсбади с смс ошибкой
+    @ResponseStatus(BAD_REQUEST)
+    ResponseEntity<Map<String, String>> handleFieldNotValid(FieldNotValidException ex) {
+        return response(ex.getMessage(), BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, List<String>>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<String> messages = ex
+                .getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .toList();
+        return response(messages, BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Map<String, List<String>>> handleHandlerMethodValidation(HandlerMethodValidationException ex) {
+        List<String> messages = ex.getParameterValidationResults()
+                .stream()
+                .flatMap(r -> r.getResolvableErrors().stream())
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .toList();
+        return response(messages, BAD_REQUEST);
+    }
+
+    private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {
+        return ResponseEntity.status(status.value()).body(Map.of("error", msg));
+    }
+
+    private ResponseEntity<Map<String, String>> response(String msg, HttpStatus status) {
+        return ResponseEntity.status(status.value()).body(Map.of("error", msg));
     }
 }
