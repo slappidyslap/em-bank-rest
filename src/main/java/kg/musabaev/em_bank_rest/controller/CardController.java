@@ -2,7 +2,7 @@ package kg.musabaev.em_bank_rest.controller;
 
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
-import kg.musabaev.em_bank_rest.service.CardService;
+import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CardController {
 
-    private final CardService cardService;
+    private final SimpleCardService cardService;
 
     // админ
     @PostMapping

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"number", "expiry", "user"})
@@ -22,7 +21,7 @@ public class Card {
 
     @Column(nullable = false, length = 512)
     @Convert(converter = CardNumberConverter.class)
-    private String number;
+    private String number; // todo мб симулирвать сторонний платежную систему которая выдает номер, csv
 
     @Column(nullable = false)
     private LocalDate expiry;

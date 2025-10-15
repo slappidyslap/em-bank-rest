@@ -10,6 +10,8 @@ spring:
       hibernate:
         format_sql: true
         use_sql_comments: true
+    hibernate:
+      ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
@@ -17,4 +19,3 @@ logging:
   level:
     sql: debug
     web: debug
-    org.springframework.cache: trace
