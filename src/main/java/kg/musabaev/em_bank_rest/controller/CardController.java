@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
+import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +66,11 @@ public class CardController {
     public ResponseEntity<BigDecimal> getBalance(
             @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
         return ResponseEntity.ok(cardService.getCardBalance(cardId));
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<?> transferMoney(@Valid @RequestBody TransferBetweenCardsRequest dto) {
+        cardService.transferMoney(User.builder().id(1L).build(), dto);
+        return ResponseEntity.noContent().build(); // FIXME
     }
 }

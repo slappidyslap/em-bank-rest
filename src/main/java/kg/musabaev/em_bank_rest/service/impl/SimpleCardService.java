@@ -1,6 +1,7 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
@@ -105,5 +106,31 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     @Override
     public void delete(Long id) {
         cardRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void transferMoney(/*FIXME*/ User user, TransferBetweenCardsRequest dto) {
+        if (dto.fromCardNumber().equals(dto.toCardNumber()))
+            throw new ResponseStatusException(BAD_REQUEST, "Source and destination cards must be different");
+
+        var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
+                .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
+        var toCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.toCardNumber()))
+                .orElseThrow(() -> new CardNotFoundException(dto.toCardNumber()));
+
+        if (fromCard.getStatus() != CardStatus.ACTIVE)
+            throw new ResponseStatusException(BAD_REQUEST, "Source card must be active");
+        if (!fromCard.getUser().equals(user) || !toCard.getUser().equals(user))
+            throw new ResponseStatusException(BAD_REQUEST, "Both cards must belong to one user");
+        if (fromCard.getBalance().compareTo(dto.amount()) < 0) {
+            throw new ResponseStatusException(BAD_REQUEST, "Insufficient funds");
+        }
+
+        fromCard.setBalance(fromCard.getBalance().subtract(dto.amount()));
+        toCard.setBalance(toCard.getBalance().add(dto.amount()));
+
+        cardRepository.save(fromCard);
+        cardRepository.save(toCard);
     }
 }

@@ -1,9 +1,7 @@
 package kg.musabaev.em_bank_rest.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import java.util.LinkedHashSet;
@@ -12,6 +10,9 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "email")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {

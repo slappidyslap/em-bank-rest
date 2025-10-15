@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificationExecutor<Card> {
 
     Page<Card> findAllByUser(User user, Pageable pageable);
+
+    Optional<Card> findByNumber(String number);
 }
