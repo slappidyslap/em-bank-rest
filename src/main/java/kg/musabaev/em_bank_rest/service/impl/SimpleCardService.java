@@ -7,6 +7,7 @@ import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.CardNotFoundException;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
+import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -24,18 +24,21 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
     private final SimpleUserService userService;
+    private final SomePaymentSystemProvider paymentSystemProvider;
 
     @Override
     @Transactional
     public GetCreateSingleCardResponse create(Long userId) { // FIXME
-        var newCard = new Card();
-        newCard.setNumber("************" + ThreadLocalRandom.current().nextInt(1000, 9999));
-        newCard.setExpiry(LocalDate.now().plusYears(3));
-        newCard.setStatus(CardStatus.ACTIVE);
-        newCard.setBalance(0d);
         var assignedUser = userService.getById(userId);
-        newCard.setUser(assignedUser);
-        newCard.setOwner(assignedUser.getFullName());
+
+        var newCard = Card.builder()
+                .number(paymentSystemProvider.generateEncryptedRandomCardNumber())
+                .expiry(LocalDate.now().plusYears(3))
+                .status(CardStatus.ACTIVE)
+                .balance(0d)
+                .user(assignedUser)
+                .owner(assignedUser.getFullName())
+                .build();
 
         var persistedCard = cardRepository.save(newCard);
         return cardMapper.toCreateCardResponse(persistedCard);

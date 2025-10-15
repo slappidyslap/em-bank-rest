@@ -1,10 +1,8 @@
 package kg.musabaev.em_bank_rest.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import kg.musabaev.em_bank_rest.util.CardNumberConverter;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -13,6 +11,9 @@ import java.time.LocalDate;
 @EqualsAndHashCode(of = {"number", "expiry", "user"})
 @Entity
 @Table(name = "cards")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Card {
 
     @Id
@@ -20,8 +21,8 @@ public class Card {
     private Long id;
 
     @Column(nullable = false, length = 512)
-    @Convert(converter = CardNumberConverter.class)
-    private String number; // todo мб симулирвать сторонний платежную систему которая выдает номер, csv
+    @JsonIgnore
+    private String number;
 
     @Column(nullable = false)
     private LocalDate expiry;

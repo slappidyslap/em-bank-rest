@@ -1,23 +1,35 @@
 package kg.musabaev.em_bank_rest.util;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.concurrent.ThreadLocalRandom;
 
 // https://medium.com/@gaddamnaveen192/encrypt-decrypt-database-records-at-field-level-in-spring-boot-096e21049559
-@Converter
-public class CardNumberConverter implements AttributeConverter<String, String> {
+@Component
+public class SomePaymentSystemProvider {
 
     private final String ALGORITHM = "AES";
     private final String SECRET_KEY = "MySecretKey12345";
 
-    @Override
-    public String convertToDatabaseColumn(String cardNumber) {
+    public String generateEncryptedRandomCardNumber() {
+        StringBuilder sb = new StringBuilder(16);
+        sb.append("6");
+        for (int i = 1; i < 16; i++) {
+            int d = ThreadLocalRandom.current().nextInt(0, 10);
+            sb.append(d);
+        }
+        return encryptCardNumber(sb.toString());
+    }
+
+    public boolean compareEncrypterCardNumbers(String n1, String n2) {
+        if (n1 == null || n2 == null) return false;
+        return n1.equals(n2);
+    }
+
+    public String encryptCardNumber(String cardNumber) {
         try {
             SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -28,8 +40,7 @@ public class CardNumberConverter implements AttributeConverter<String, String> {
         }
     }
 
-    @Override
-    public String convertToEntityAttribute(String encryptedCardNumber) {
+    public String decryptCardNumber(String encryptedCardNumber) {
         try {
             SecretKeySpec secretKey = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -38,5 +49,9 @@ public class CardNumberConverter implements AttributeConverter<String, String> {
         } catch (Exception e) {
             throw new RuntimeException("Error while decrypting: ", e);
         }
+    }
+
+    public String maskCardNumber(String encryptedCardNumber) {
+        return "**** **** **** " + decryptCardNumber(encryptedCardNumber).substring(12);
     }
 }
