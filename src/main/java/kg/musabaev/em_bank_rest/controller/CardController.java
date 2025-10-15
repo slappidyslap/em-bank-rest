@@ -18,16 +18,14 @@ public class CardController {
 
     // админ
     @PostMapping
-    public ResponseEntity<GetCreateSingleCardResponse> create(CreateCardRequest dto) {
+    public ResponseEntity<GetCreateSingleCardResponse> create(@RequestBody CreateCardRequest dto) {
         return ResponseEntity.ok(cardService.create(dto.userId()));
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<GetCreateSingleCardResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(cardService.getById(id));
     }
-
 
     @GetMapping
     public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(Pageable pageable) {

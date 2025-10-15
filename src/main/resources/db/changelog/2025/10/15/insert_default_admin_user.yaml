@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert default admin user
+      author: eld
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "eld@test.com"
+              - column:
+                  name: full_name
+                  value: "Musabaev Eldiyar"

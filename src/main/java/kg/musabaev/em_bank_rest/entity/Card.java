@@ -1,13 +1,12 @@
 package kg.musabaev.em_bank_rest.entity;
 
 import jakarta.persistence.*;
+import kg.musabaev.em_bank_rest.util.CardNumberConverter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 
 @Getter
@@ -21,7 +20,8 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 512)
+    @Convert(converter = CardNumberConverter.class)
     private String number;
 
     @Column(nullable = false)

@@ -5,3 +5,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/em_bank_rest
     username: postgres
     password: 1
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    sql: debug
+    web: debug
+    org.springframework.cache: trace

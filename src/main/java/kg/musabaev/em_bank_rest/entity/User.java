@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode(of = "email")
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
