@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -36,7 +35,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     @Override
     @Transactional
-    public GetCreateSingleCardResponse create(Long userId) { // FIXME
+    public GetCreateSingleCardResponse create(Long userId) {
         var assignedUser = userService.getById(userId);
 
         var newCard = Card.builder()
@@ -77,12 +76,12 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     // user
     @Override
     public Page<Card> getUserCards(User user, Pageable pageable/*, User authorizedUser*/) {
-        return cardRepository.findAllByOwner(user, pageable);
+        return cardRepository.findAllByUser(user, pageable);
     }
 
     @Override
     public BigDecimal getCardBalance(Long cardId) {
-        var card = cardRepository.findByIdAndActiveStatus(cardId)
+        var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         return card.getBalance();
     }

@@ -35,7 +35,7 @@ public class CardBlockRequest {
     @JoinColumn(name = "processor_user_id", nullable = false)
     private User processerUser;
 
-    public static enum Status {
+    public enum Status {
         DONE, IN_PROGRESS
     }
 

@@ -12,10 +12,5 @@ import java.util.Optional;
 
 public interface CardRepository extends JpaRepository<Card, Long>, JpaSpecificationExecutor<Card> {
 
-    Page<Card> findAllByOwner(User owner, Pageable pageable);
-
-    @Query("FROM Card c WHERE c.id = ?1 AND c.status = 'ACTIVE'")
-    Optional<Card> findByIdAndActiveStatus(Long id);
-
-    Optional<Card> findByNumber(String cardNumber);
+    Page<Card> findAllByUser(User user, Pageable pageable);
 }
