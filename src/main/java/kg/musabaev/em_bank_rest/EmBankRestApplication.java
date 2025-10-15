@@ -9,5 +9,4 @@ public class EmBankRestApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EmBankRestApplication.class, args);
 	}
-
 }

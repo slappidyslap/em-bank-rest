@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: em-bank-rest
+  datasource:
+    url: jdbc:postgresql://localhost:5432/em_bank_rest
+    username: postgres
+    password: 1
