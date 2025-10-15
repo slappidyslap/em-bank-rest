@@ -19,9 +19,3 @@ logging:
   level:
     sql: debug
     web: debug
-
-app:
-    msg:
-      user_id_not_null: User ID must be null
-      user_id_positive: User ID must be positive
-      id_positive: ID must be positive

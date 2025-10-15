@@ -30,14 +30,14 @@ public class CardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<GetCreateSingleCardResponse> getById(
-            @Valid @Positive(message = "${app.msg.id_positive}") @PathVariable Long id) {
+            @Valid @Positive(message = "{app.msg.id_positive}") @PathVariable Long id) {
         return ResponseEntity.ok(cardService.getById(id));
     }
 
     @GetMapping
     public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(
             String status,
-            @Valid @Positive(message = "${app.msg.user_id_positive}") Long userId,
+            @Valid @Positive(message = "{app.msg.user_id_positive}") Long userId,
             Pageable pageable) {
         Specification<Card> spec = CardSpecification.build(status, userId);
         return ResponseEntity.ok(cardService.getAllCards(spec, pageable));
@@ -46,7 +46,7 @@ public class CardController {
     // админ
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(
-            @Valid @Positive(message = "${app.msg.id_positive}") @PathVariable Long id) {
+            @Valid @Positive(message = "{app.msg.id_positive}") @PathVariable Long id) {
         cardService.delete(id);
         return ResponseEntity.noContent().build();
     }
