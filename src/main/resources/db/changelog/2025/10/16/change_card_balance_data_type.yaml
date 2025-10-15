@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_new_balance_column
+      author: eld
+      changes:
+        - addColumn:
+            tableName: cards
+            columns:
+              - column:
+                  name: balance_new
+                  type: DECIMAL(19, 2)
+                  defaultValue: 0.00
+                  constraints:
+                    nullable: false
+                    defaultValueNumeric: 0.00
+  - changeSet:
+      id: copy_old_balance_double
+      author: eld
+      changes:
+        - sql:
+            sql: 'UPDATE cards SET balance_new = balance;'
+  - changeSet:
+      id: delete_old_balance_double
+      author: eld
+      changes:
+        - dropColumn:
+            tableName: cards
+            columnName: balance
+  - changeSet:
+      id: rename_new_balance_decimel
+      author: eld
+      changes:
+        - renameColumn:
+            tableName: cards
+            oldColumnName: balance_new
+            newColumnName: balance
+            columnDataType: DECIMAL(19, 2)
+

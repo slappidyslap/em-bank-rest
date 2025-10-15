@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -42,7 +43,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
                 .number(paymentSystemProvider.generateEncryptedRandomCardNumber())
                 .expiry(LocalDate.now().plusYears(3))
                 .status(CardStatus.ACTIVE)
-                .balance(0d)
+                .balance(new BigDecimal(0))
                 .user(assignedUser)
                 .owner(assignedUser.getFullName())
                 .build();
@@ -80,10 +81,9 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     }
 
     @Override
-    public Double getCardBalance(Long cardId) {
-        var card = cardRepository.findById(cardId)
+    public BigDecimal getCardBalance(Long cardId) {
+        var card = cardRepository.findByIdAndActiveStatus(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
-//        if (card.getStatus() == CardStatus.BLOCKED) todo можно ли так делать
         return card.getBalance();
     }
 

@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/2025/10/15/insert_default_admin_user.yaml
   - include:
       file: db/changelog/2025/10/16/create_card_block_requests_table.yaml
+  - include:
+      file: db/changelog/2025/10/16/change_card_balance_data_type.yaml

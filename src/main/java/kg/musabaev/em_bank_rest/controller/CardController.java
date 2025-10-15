@@ -14,6 +14,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/v1/cards")
 @RequiredArgsConstructor
@@ -56,5 +58,11 @@ public class CardController {
             @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
         cardService.blockCard(cardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{cardId}/balance")
+    public ResponseEntity<BigDecimal> getBalance(
+            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+        return ResponseEntity.ok(cardService.getCardBalance(cardId));
     }
 }

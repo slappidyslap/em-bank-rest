@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -36,9 +37,8 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
-    // fixme double
     @Column(nullable = false)
-    private Double balance;
+    private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)

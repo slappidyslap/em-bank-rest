@@ -8,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
+
 public interface CardService {
 
     GetCreateSingleCardResponse create(Long userId);
@@ -20,7 +22,7 @@ public interface CardService {
 
     Page<Card> getUserCards(User user, Pageable pageable/*, User authorizedUser*/);
 
-    Double getCardBalance(Long cardId);
+    BigDecimal getCardBalance(Long cardId);
 
     void blockCard(Long cardId);
 
