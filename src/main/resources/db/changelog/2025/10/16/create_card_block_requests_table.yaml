@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: create card block requests table
+      author: eld
+      changes:
+        - createTable:
+            tableName: card_block_requests
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: card_block_requests_id_pk
+              - column:
+                  name: card_to_block_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: requester_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: processing_status
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: processor_user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: card_to_block_id
+            baseTableName: card_block_requests
+            constraintName: card_block_requests_card_to_block_id__cards_id_fk
+            referencedColumnNames: id
+            referencedTableName: cards
+        - addForeignKeyConstraint:
+            baseColumnNames: processor_user_id
+            baseTableName: card_block_requests
+            constraintName: card_block_requests_processor_user_id__users_id_fk
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: requester_user_id
+            baseTableName: card_block_requests
+            constraintName: card_block_requests_requester_user_id_users_id
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: add constrains for users email and cards number
+      author: eld
+      changes:
+        - addNotNullConstraint:
+            columnName: email
+            tableName: users
+            columnDataType: VARCHAR(255)
+            validate: true
+        - addUniqueConstraint:
+            tableName: cards
+            columnNames: number
+            constraintName: cards_number_unq
+

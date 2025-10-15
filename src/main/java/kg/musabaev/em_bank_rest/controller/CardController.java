@@ -28,10 +28,10 @@ public class CardController {
         return ResponseEntity.ok(cardService.create(dto.userId()));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{cardId}")
     public ResponseEntity<GetCreateSingleCardResponse> getById(
-            @Valid @Positive(message = "{app.msg.id_positive}") @PathVariable Long id) {
-        return ResponseEntity.ok(cardService.getById(id));
+            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+        return ResponseEntity.ok(cardService.getById(cardId));
     }
 
     @GetMapping
@@ -44,10 +44,17 @@ public class CardController {
     }
 
     // админ
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{cardId}")
     public ResponseEntity<?> delete(
-            @Valid @Positive(message = "{app.msg.id_positive}") @PathVariable Long id) {
-        cardService.delete(id);
+            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+        cardService.delete(cardId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{cardId}/block-request")
+    public ResponseEntity<?> requestBlock(
+            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+        cardService.blockCard(cardId);
         return ResponseEntity.noContent().build();
     }
 }

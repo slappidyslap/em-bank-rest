@@ -2,20 +2,26 @@ package kg.musabaev.em_bank_rest.service.impl;
 
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
 import kg.musabaev.em_bank_rest.entity.Card;
+import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.CardNotFoundException;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
+import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     private final CardMapper cardMapper;
     private final SimpleUserService userService;
     private final SomePaymentSystemProvider paymentSystemProvider;
+    private final CardBlockRequestRepository cardBlockRequestRepository;
 
     @Override
     @Transactional
@@ -85,11 +92,15 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     public void blockCard(Long cardId) {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
-
         if (card.getStatus() == CardStatus.BLOCKED)
-            throw new IllegalStateException("couldn't block already blocked card");
-        card.setStatus(CardStatus.BLOCKED);
-        cardRepository.save(card);
+            throw new ResponseStatusException(BAD_REQUEST, "couldn't block already blocked card");
+
+        var assignedUser = userService.getById(1L); // FIXME
+        cardBlockRequestRepository.save(CardBlockRequest.builder()
+                .cardToBlock(card)
+                .requesterUser(assignedUser)
+                .processingStatus(CardBlockRequest.Status.IN_PROGRESS)
+                .build());
     }
 
     @Override

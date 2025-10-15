@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/2025/10/15/modify_card_number_data_type.yaml
   - include:
       file: db/changelog/2025/10/15/insert_default_admin_user.yaml
+  - include:
+      file: db/changelog/2025/10/16/create_card_block_requests_table.yaml

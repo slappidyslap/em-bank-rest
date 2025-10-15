@@ -23,10 +23,12 @@ public class User {
     @Column(nullable = false)
     private String fullName;
 
+    @Column(nullable = false, unique = true)
     @NaturalId(mutable = true)
     private String email;
 
     // todo чекни orphanRemoval нужно ли
+    @Column(nullable = false)
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Card> cards;
 

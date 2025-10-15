@@ -3,12 +3,13 @@ package kg.musabaev.em_bank_rest.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.NaturalId;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"number", "expiry", "user"})
+@EqualsAndHashCode(of = {"number"})
 @Entity
 @Table(name = "cards")
 @Builder
@@ -21,6 +22,7 @@ public class Card {
     private Long id;
 
     @Column(nullable = false, length = 512)
+    @NaturalId
     @JsonIgnore
     private String number;
 
