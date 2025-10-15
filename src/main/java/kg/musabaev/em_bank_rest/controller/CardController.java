@@ -2,10 +2,13 @@ package kg.musabaev.em_bank_rest.controller;
 
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import kg.musabaev.em_bank_rest.entity.Card;
+import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +31,12 @@ public class CardController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(Pageable pageable) {
-        return ResponseEntity.ok(cardService.getAllCards(pageable));
+    public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(
+            String status,
+            Long userId,
+            Pageable pageable) {
+        Specification<Card> spec = CardSpecification.build(status, userId);
+        return ResponseEntity.ok(cardService.getAllCards(spec, pageable));
     }
 
     // админ

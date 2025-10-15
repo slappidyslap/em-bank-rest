@@ -10,6 +10,7 @@ import kg.musabaev.em_bank_rest.repository.CardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +49,8 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     }
 
     @Override
-    public Page<GetCreateSingleCardResponse> getAllCards(Pageable pageable) {
-        var cards = cardRepository.findAll(pageable);
+    public Page<GetCreateSingleCardResponse> getAllCards(Specification<Card> spec, Pageable pageable) {
+        var cards = cardRepository.findAll(spec, pageable);
         return cards.map(cardMapper::toGetSingleCardResponse);
     }
 

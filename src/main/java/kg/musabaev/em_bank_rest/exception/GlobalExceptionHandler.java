@@ -13,4 +13,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     void handleResourceNotFound() {
     }
+
+    @ExceptionHandler(FieldNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    void handleFieldNotValid() {// TODO кастомный респонсбади с смс ошибкой
+    }
 }

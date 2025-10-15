@@ -6,6 +6,7 @@ import kg.musabaev.em_bank_rest.entity.CardStatus;
 import kg.musabaev.em_bank_rest.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 public interface CardService {
 
@@ -13,7 +14,7 @@ public interface CardService {
 
     GetCreateSingleCardResponse getById(Long id);
 
-    Page<GetCreateSingleCardResponse> getAllCards(Pageable pageable);
+    Page<GetCreateSingleCardResponse> getAllCards(Specification<Card> spec, Pageable pageable);
 
     Card updateStatus(Long cardId, CardStatus newStatus);
 
