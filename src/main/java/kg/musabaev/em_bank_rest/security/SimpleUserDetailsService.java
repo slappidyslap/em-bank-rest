@@ -16,7 +16,7 @@ public class SimpleUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         return userRepository
                 .findByEmail(email)
                 .map(SimpleUserDetails::new)

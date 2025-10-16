@@ -1,10 +1,9 @@
 package kg.musabaev.em_bank_rest.exception;
 
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,7 +11,6 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -69,11 +67,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(CONFLICT)
     public void handleUserAlreadyExists() {
-    }
-
-    @ExceptionHandler(UserUnauthorizedException.class)
-    @ResponseStatus(UNAUTHORIZED)
-    public void handleUserUnauthorized() {
     }
 
     private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {
