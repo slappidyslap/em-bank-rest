@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/v1/cards")
 @RequiredArgsConstructor
+@Valid
 public class CardController {
 
     private final SimpleCardService cardService;
@@ -34,14 +36,14 @@ public class CardController {
 
     @GetMapping("/{cardId}")
     public ResponseEntity<GetCreateSingleCardResponse> getById(
-            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+            @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         return ResponseEntity.ok(cardService.getById(cardId));
     }
 
     @GetMapping
     public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(
             String status,
-            @Valid @Positive(message = "{app.msg.user_id_positive}") Long userId,
+            @Positive(message = "{app.msg.positive}") Long userId,
             Pageable pageable) {
         Specification<Card> spec = CardSpecification.build(status, userId);
         return ResponseEntity.ok(cardService.getAllCards(spec, pageable));
@@ -50,26 +52,27 @@ public class CardController {
     // админ
     @DeleteMapping("/{cardId}")
     public ResponseEntity<?> delete(
-            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+            @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         cardService.delete(cardId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{cardId}/block-request")
     public ResponseEntity<?> requestBlock(
-            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+            @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         cardService.blockCard(cardId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{cardId}/balance")
     public ResponseEntity<BigDecimal> getBalance(
-            @Valid @Positive(message = "{app.msg.card_id_positive}") @PathVariable Long cardId) {
+            @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         return ResponseEntity.ok(cardService.getCardBalance(cardId));
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<?> transferMoney(@Valid @RequestBody TransferBetweenCardsRequest dto) {
+    public ResponseEntity<?> transferMoney(
+            @Valid @RequestBody TransferBetweenCardsRequest dto) {
         cardService.transferMoney(User.builder().id(1L).build(), dto);
         return ResponseEntity.noContent().build(); // FIXME
     }

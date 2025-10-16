@@ -12,6 +12,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -43,7 +44,7 @@ public class GlobalExceptionHandler {
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                 .toList();
         return response(messages, BAD_REQUEST);
 
@@ -54,16 +55,23 @@ public class GlobalExceptionHandler {
         List<String> messages = ex.getParameterValidationResults()
                 .stream()
                 .flatMap(r -> r.getResolvableErrors().stream())
-                .map(MessageSourceResolvable::getDefaultMessage)
+                .map(m -> {
+                    try {
+                        var fieldName = m.getCodes()[1].split("\\.")[1];
+                        return fieldName + " " + m.getDefaultMessage();
+                    } catch (Exception e) {
+                        return "some field " + m.getDefaultMessage();
+                    }
+                })
                 .toList();
         return response(messages, BAD_REQUEST);
     }
 
     private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(Map.of("error", msg));
+        return ResponseEntity.status(status.value()).body(Map.of("errors", msg));
     }
 
     private ResponseEntity<Map<String, String>> response(String msg, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(Map.of("error", msg));
+        return ResponseEntity.status(status.value()).body(Map.of("errors", msg));
     }
 }
