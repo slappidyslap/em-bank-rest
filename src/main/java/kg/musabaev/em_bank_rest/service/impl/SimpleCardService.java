@@ -1,7 +1,9 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
-import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
+import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
@@ -11,7 +13,6 @@ import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
-import kg.musabaev.em_bank_rest.service.UserService;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,9 +34,11 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     private final CardBlockRequestRepository cardBlockRequestRepository;
     private final UserRepository userRepository;
 
+    private final ObjectMapper objectMapper;
+
     @Override
     @Transactional
-    public GetCreateSingleCardResponse create(Long userId) {
+    public GetCreatePatchCardResponse create(Long userId) {
         var assignedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -54,26 +57,26 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     @Override
     @Transactional(readOnly = true)
-    public GetCreateSingleCardResponse getById(Long id) {
+    public GetCreatePatchCardResponse getById(Long id) {
         var foundCard = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
-        return cardMapper.toGetSingleCardResponse(foundCard);
+        return cardMapper.toGetCardResponse(foundCard);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreateSingleCardResponse> getAllCards(Specification<Card> spec, Pageable pageable) {
+    public Page<GetCreatePatchCardResponse> getAllCards(Specification<Card> spec, Pageable pageable) {
         var cards = cardRepository.findAll(spec, pageable);
-        return cards.map(cardMapper::toGetSingleCardResponse);
+        return cards.map(cardMapper::toGetCardResponse);
     }
 
     @Override
     @Transactional
-    public Card updateStatus(Long cardId, CardStatus newStatus) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new CardNotFoundException(cardId));
-        card.setStatus(newStatus);
-        return cardRepository.save(card);
+    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto) {
+        Card card = cardRepository.findById(id)
+                .orElseThrow(() -> new CardNotFoundException(id));
+        card.setStatus(dto.status());
+        return cardMapper.toPatchCardResponse(cardRepository.save(card));
     }
 
     // user

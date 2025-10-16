@@ -1,7 +1,7 @@
 package kg.musabaev.em_bank_rest.mapper;
 
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
-import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.mapper.util.CardMapperUtil;
 import org.mapstruct.Mapper;
@@ -14,10 +14,13 @@ public interface CardMapper {
     Card toEntity(CreateCardRequest dto);
 
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")
-    GetCreateSingleCardResponse toCreateCardResponse(Card model);
+    GetCreatePatchCardResponse toCreateCardResponse(Card model);
 
-    Card toEntity(GetCreateSingleCardResponse getSingleCardResponse);
+    Card toEntity(GetCreatePatchCardResponse getSingleCardResponse);
     
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")
-    GetCreateSingleCardResponse toGetSingleCardResponse(Card card);
+    GetCreatePatchCardResponse toGetCardResponse(Card card);
+
+    @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")
+    GetCreatePatchCardResponse toPatchCardResponse(Card card);
 }

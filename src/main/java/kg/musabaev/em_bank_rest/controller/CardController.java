@@ -3,8 +3,9 @@ package kg.musabaev.em_bank_rest.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
-import kg.musabaev.em_bank_rest.dto.GetCreateSingleCardResponse;
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
+import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
@@ -14,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,19 +29,19 @@ public class CardController {
 
     // админ
     @PostMapping
-    public ResponseEntity<GetCreateSingleCardResponse> create(
+    public ResponseEntity<GetCreatePatchCardResponse> create(
             @Valid @RequestBody CreateCardRequest dto) {
         return ResponseEntity.accepted().body(cardService.create(dto.userId()));
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<GetCreateSingleCardResponse> getById(
+    public ResponseEntity<GetCreatePatchCardResponse> getById(
             @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         return ResponseEntity.ok(cardService.getById(cardId));
     }
 
     @GetMapping
-    public ResponseEntity<Page<GetCreateSingleCardResponse>> getAll(
+    public ResponseEntity<Page<GetCreatePatchCardResponse>> getAll(
             String status,
             @Positive(message = "{app.msg.positive}") Long userId,
             Pageable pageable) {
@@ -75,5 +75,11 @@ public class CardController {
             @Valid @RequestBody TransferBetweenCardsRequest dto) {
         cardService.transferMoney(User.builder().id(1L).build(), dto);
         return ResponseEntity.noContent().build(); // FIXME
+    }
+
+    // админ
+    @PatchMapping("/{id}")
+    public ResponseEntity<GetCreatePatchCardResponse> patch(@PathVariable Long id, @RequestBody UpdateStatusCardRequest dto) { //todo valid
+        return ResponseEntity.ok(cardService.patchStatus(id, dto));
     }
 }
