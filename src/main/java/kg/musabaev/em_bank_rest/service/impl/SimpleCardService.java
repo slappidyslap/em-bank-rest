@@ -50,6 +50,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetCreateSingleCardResponse getById(Long id) {
         var foundCard = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
@@ -57,6 +58,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<GetCreateSingleCardResponse> getAllCards(Specification<Card> spec, Pageable pageable) {
         var cards = cardRepository.findAll(spec, pageable);
         return cards.map(cardMapper::toGetSingleCardResponse);
@@ -73,11 +75,13 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     // user
     @Override
+    @Transactional(readOnly = true)
     public Page<Card> getUserCards(User user, Pageable pageable/*, User authorizedUser*/) {
         return cardRepository.findAllByUser(user, pageable);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BigDecimal getCardBalance(Long cardId) {
         var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));

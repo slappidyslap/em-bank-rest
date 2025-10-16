@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class SimpleAuthService implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
+    @Transactional
     public SignupUserResponse signup(SignupUserRequest dto) {
         Optional<User> existingUser = userRepository.findByEmail(dto.email());
         if (existingUser.isPresent())
@@ -47,6 +49,7 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthenticateRefreshUserResponse login(AuthenticateRequest dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.email(),
@@ -56,6 +59,7 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
+    @Transactional
     public AuthenticateRefreshUserResponse refresh() {
         return null;
     }
