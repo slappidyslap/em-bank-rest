@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
 docker run \
   --name postgres \
   -e POSTGRES_PASSWORD=1 \

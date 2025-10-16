@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: "no"
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: em_bank_rest
+  em-bank-rest:
+    image: em-bank-rest
+    build: .
+    restart: "no"
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+volumes:
+  postgres_data:
+    driver:
+      local

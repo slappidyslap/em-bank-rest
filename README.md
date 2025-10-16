@@ -4,3 +4,5 @@
 для безопасного хранения ключей и шифрования данных
 
 https://habr.com/ru/articles/818489/
+
+https://stackoverflow.com/questions/27767264/how-to-dockerize-a-maven-project-how-many-ways-to-accomplish-it
