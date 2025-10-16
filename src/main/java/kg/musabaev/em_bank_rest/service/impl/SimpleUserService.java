@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +26,8 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreatePatchUserResponse> getAll(UserSpecification spec, Pageable pageable) {
-        return userRepository.findAll(spec.build(), pageable).map(userMapper::toGetUserResponse);
+    public Page<GetCreatePatchUserResponse> getAll(UserSpecification filters, Pageable pageable) {
+        return userRepository.findAll(filters.build(), pageable).map(userMapper::toGetUserResponse);
     }
 
     @Override

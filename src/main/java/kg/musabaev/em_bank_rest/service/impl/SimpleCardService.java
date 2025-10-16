@@ -1,7 +1,6 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
-import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
@@ -13,13 +12,14 @@ import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
+import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.CardService;
+import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +66,8 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreatePatchCardResponse> getAllCards(Specification<Card> spec, Pageable pageable) {
-        var cards = cardRepository.findAll(spec, pageable);
+    public Page<GetCreatePatchCardResponse> getAll(CardSpecification filters, Pageable pageable) {
+        var cards = cardRepository.findAll(filters.build(), pageable);
         return cards.map(cardMapper::toGetCardResponse);
     }
 
@@ -84,12 +84,12 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreatePatchCardResponse> getAllCards(
-            Specification<Card> filter, // todo
+    public Page<GetCreatePatchCardResponse> getAll(
+            CardSpecification filters,
             Pageable pageable,
             Authentication auth) {
         var authUser = getCurrentAuthenticatedUser(auth);
-        var cards = cardRepository.findAllByUser(authUser, filter, pageable);
+        var cards = cardRepository.findAllByUser(authUser, filters.build(), pageable);
         return cards.map(cardMapper::toGetCardResponse);
     }
 
@@ -151,7 +151,7 @@ public class SimpleCardService implements CardService {
     }
 
     @Override
-    public Pair<BigDecimal> getCardBalance(Long cardId, Authentication auth) {
+    public Pair<BigDecimal> getBalance(Long cardId, Authentication auth) {
         requireCardBelongUser(cardId, auth);
         return Pair.of("balance", cardRepository.findById(cardId).get().getBalance());
     }

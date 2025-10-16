@@ -8,9 +8,12 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class CardSpecification {
+public record CardSpecification(
+        String status,
+        Long userId
+) {
 
-    public static Specification<Card> build(String status, Long userId) {
+    public Specification<Card> build() {
         CardStatus enumStatus;
         try {
             enumStatus = CardStatus.valueOf(status.toUpperCase(Locale.ROOT));
@@ -22,18 +25,14 @@ public class CardSpecification {
     }
 
     private static Specification<Card> withStatus(CardStatus status) {
-        return (root, query, criteriaBuilder) -> {
-            return status == null
-                    ? criteriaBuilder.conjunction()
-                    : criteriaBuilder.equal(root.get("status"), status);
-        };
+        return (root, query, criteriaBuilder) -> status == null
+                ? criteriaBuilder.conjunction()
+                : criteriaBuilder.equal(root.get("status"), status);
     }
 
     private static Specification<Card> withUserId(Long userId) {
-        return (root, query, criteriaBuilder) -> {
-            return userId == null
-                    ? criteriaBuilder.conjunction()
-                    : criteriaBuilder.equal(root.get("user").get("id"), userId);
-        };
+        return (root, query, criteriaBuilder) -> userId == null
+                ? criteriaBuilder.conjunction()
+                : criteriaBuilder.equal(root.get("user").get("id"), userId);
     }
 }

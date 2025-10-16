@@ -3,14 +3,13 @@ package kg.musabaev.em_bank_rest.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
+import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
-import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,10 +27,10 @@ public class UserCardController {
 
     @GetMapping
     public ResponseEntity<Page<GetCreatePatchCardResponse>> getMyAllCards(
-            Specification<Card> filter,
+            @ModelAttribute CardSpecification filters,
             Pageable pageable,
             @AuthenticationPrincipal Authentication auth) {
-        return ResponseEntity.ok(cardService.getAllCards(filter, pageable, auth));
+        return ResponseEntity.ok(cardService.getAll(filters, pageable, auth));
     }
 
     @GetMapping("/{cardId}")
@@ -45,7 +44,7 @@ public class UserCardController {
     public ResponseEntity<Pair<BigDecimal>> getBalance(
             @Positive(message = "{app.msg.positive}") @PathVariable Long cardId,
             @AuthenticationPrincipal Authentication auth) {
-        return ResponseEntity.ok(cardService.getCardBalance(cardId, auth));
+        return ResponseEntity.ok(cardService.getBalance(cardId, auth));
     }
 
     @PostMapping("/{cardId}/request-block")

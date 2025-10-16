@@ -11,8 +11,6 @@ https://github.com/jwtk/jjwt?tab=readme-ov-file#quickstart
 
 проверить validation (emailornull) добавить новые - usercontroller
 
-cardspec передалать как userspec
-
 изменение статуса карты токо если он есть "подсистеме" 
 
 
