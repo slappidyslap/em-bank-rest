@@ -10,6 +10,7 @@ import kg.musabaev.em_bank_rest.exception.*;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
+import kg.musabaev.em_bank_rest.repository.UserRepository;
 import kg.musabaev.em_bank_rest.service.UserService;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,15 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
-    private final UserService userService;
     private final SomePaymentSystemProvider paymentSystemProvider;
     private final CardBlockRequestRepository cardBlockRequestRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
     public GetCreateSingleCardResponse create(Long userId) {
-        var assignedUser = userService.getById(userId);
+        var assignedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         var newCard = Card.builder()
                 .number(paymentSystemProvider.generateEncryptedRandomCardNumber())
@@ -97,7 +99,8 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
         if (card.getStatus() == CardStatus.BLOCKED)
             throw new CardAlreadyBlockedException();
 
-        var assignedUser = userService.getById(1L); // FIXME
+        var assignedUser = userRepository.findById(card.getUser().getId())
+                .orElseThrow(() -> new UserNotFoundException(card.getUser().getId()));
         cardBlockRequestRepository.save(CardBlockRequest.builder()
                 .cardToBlock(card)
                 .requesterUser(assignedUser)

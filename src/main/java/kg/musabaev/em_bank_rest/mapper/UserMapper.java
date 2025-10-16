@@ -1,8 +1,6 @@
 package kg.musabaev.em_bank_rest.mapper;
 
-import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
-import kg.musabaev.em_bank_rest.dto.SignupUserRequest;
-import kg.musabaev.em_bank_rest.dto.SignupUserResponse;
+import kg.musabaev.em_bank_rest.dto.*;
 import kg.musabaev.em_bank_rest.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -15,7 +13,11 @@ public interface UserMapper {
 
     SignupUserRequest toSignupUserRequest(User user);
 
-    SignupUserResponse toSignupUserResponse(User user);
+    GetCreatePatchUserResponse toGetUserResponse(User user);
+
+    GetCreatePatchUserResponse toCreateUserResponse(User user);
+
+    GetCreatePatchUserResponse toPatchUserResponse(User user);
 
     void patch(PatchUserRequest dto, @MappingTarget User entity);
 }

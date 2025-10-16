@@ -1,5 +1,6 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.UserAlreadyExistsException;
@@ -23,20 +24,20 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> getAll(UserSpecification spec, Pageable pageable) {
-        return userRepository.findAll(spec.build(), pageable);
+    public Page<GetCreatePatchUserResponse> getAll(UserSpecification spec, Pageable pageable) {
+        return userRepository.findAll(spec.build(), pageable).map(userMapper::toGetUserResponse);
     }
 
     @Override
     @Transactional
-    public User patch(Long id, PatchUserRequest dto) {
+    public GetCreatePatchUserResponse patch(Long id, PatchUserRequest dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         if (dto.email() != null && userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();
 
         userMapper.patch(dto, user);
-        return userRepository.save(user);
+        return userMapper.toPatchUserResponse(userRepository.save(user));
     }
 
     @Override
@@ -49,8 +50,8 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+    public GetCreatePatchUserResponse getById(Long id) {
+        return userMapper.toGetUserResponse(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id)));
     }
 }

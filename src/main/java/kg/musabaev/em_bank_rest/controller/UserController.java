@@ -2,8 +2,8 @@ package kg.musabaev.em_bank_rest.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
-import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +21,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<User>> getAll(
+    public ResponseEntity<Page<GetCreatePatchUserResponse>> getAll(
             @ModelAttribute UserSpecification filters, Pageable pageable) {
         return ResponseEntity.ok(userService.getAll(filters, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@Positive @PathVariable Long id) {
+    public ResponseEntity<GetCreatePatchUserResponse> getById(@Positive @PathVariable Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> patch(@Positive @PathVariable Long id, @Valid @RequestBody PatchUserRequest dto) {
+    public ResponseEntity<GetCreatePatchUserResponse> patch(@Positive @PathVariable Long id, @Valid @RequestBody PatchUserRequest dto) {
         return ResponseEntity.ok(userService.patch(id, dto));
     }
 }

@@ -36,7 +36,7 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     @Transactional
-    public SignupUserResponse signup(SignupUserRequest dto) {
+    public GetCreatePatchUserResponse signup(SignupUserRequest dto) {
         Optional<User> existingUser = userRepository.findByEmail(dto.email());
         if (existingUser.isPresent())
             throw new UserAlreadyExistsException();
@@ -49,7 +49,7 @@ public class SimpleAuthService implements AuthService {
                 .build();
         var persistedUser = userRepository.save(user);
 
-        return userMapper.toSignupUserResponse(persistedUser);
+        return userMapper.toCreateUserResponse(persistedUser);
     }
 
     @Override
