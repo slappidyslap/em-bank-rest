@@ -1,14 +1,11 @@
 package kg.musabaev.em_bank_rest.service;
 
-import kg.musabaev.em_bank_rest.dto.AuthenticateRefreshUserResponse;
-import kg.musabaev.em_bank_rest.dto.AuthenticateRequest;
-import kg.musabaev.em_bank_rest.dto.SignupUserRequest;
-import kg.musabaev.em_bank_rest.dto.SignupUserResponse;
+import kg.musabaev.em_bank_rest.dto.*;
 
 public interface AuthService {
     SignupUserResponse signup(SignupUserRequest dto);
 
     AuthenticateRefreshUserResponse login(AuthenticateRequest dto);
 
-    AuthenticateRefreshUserResponse refresh(/*TODO*/);
+    AuthenticateRefreshUserResponse refresh(UpdateTokensRequest dto);
 }

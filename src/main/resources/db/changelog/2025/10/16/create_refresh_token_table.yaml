@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create refresh token table
+      author: eld
+      changes:
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: refresh_tokens_id_pk
+              - column:
+                  name: owner_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: token
+            constraintName: refresh_tokens_token_unq
+            tableName: refresh_tokens
+        - addForeignKeyConstraint:
+            baseColumnNames: owner_id
+            baseTableName: refresh_tokens
+            constraintName: refresh_tokens_owner_id__users_id_fk
+            referencedColumnNames: id
+            referencedTableName: users
+      rollback:
+        - dropForeignKeyConstraint:
+            baseTableName: refresh_tokens
+            constraintName: refresh_tokens_owner_id__users_id_fk
+        - dropUniqueConstraint:
+            tableName: refresh_tokens
+            constraintName: refresh_tokens_token_unq
+        - dropTable:
+            tableName: refresh_tokens
