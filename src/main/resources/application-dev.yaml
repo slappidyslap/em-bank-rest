@@ -16,3 +16,31 @@ logging:
   level:
     sql: debug
     web: debug
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include:
+          - auditevents
+          - beans
+          - caches
+          - conditions
+          - configprops
+          - env
+          - health
+          - heapdump
+          - httptrace
+          - info
+          - logfile
+          - loggers
+          - liquibase
+          - metrics
+          - mappings
+          - scheduledtasks
+          - sessions
+          - shutdown
+          - startup
+          - threaddump
