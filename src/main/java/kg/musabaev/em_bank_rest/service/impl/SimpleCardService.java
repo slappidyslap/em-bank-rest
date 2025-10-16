@@ -13,11 +13,14 @@ import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
+import kg.musabaev.em_bank_rest.service.CardService;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +29,13 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardService {
+public class SimpleCardService implements CardService {
 
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
     private final SomePaymentSystemProvider paymentSystemProvider;
     private final CardBlockRequestRepository cardBlockRequestRepository;
     private final UserRepository userRepository;
-
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -70,6 +71,8 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
         return cards.map(cardMapper::toGetCardResponse);
     }
 
+    // fixme надо удостовериться что заявка
+    //  на блокировку карты была (другая таблица - другая "подсистема)
     @Override
     @Transactional
     public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto) {
@@ -79,34 +82,30 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
         return cardMapper.toPatchCardResponse(cardRepository.save(card));
     }
 
-    // user
     @Override
     @Transactional(readOnly = true)
-    public Page<Card> getUserCards(User user, Pageable pageable/*, User authorizedUser*/) {
-        return cardRepository.findAllByUser(user, pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BigDecimal getCardBalance(Long cardId) {
-        var card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new CardNotFoundException(cardId));
-        return card.getBalance();
+    public Page<GetCreatePatchCardResponse> getAllCards(
+            Specification<Card> filter, // todo
+            Pageable pageable,
+            Authentication auth) {
+        var authUser = getCurrentAuthenticatedUser(auth);
+        var cards = cardRepository.findAllByUser(authUser, filter, pageable);
+        return cards.map(cardMapper::toGetCardResponse);
     }
 
     @Override
     @Transactional
-    public void blockCard(Long cardId) {
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new CardNotFoundException(cardId));
+    public void requestBlockCard(Long cardId, Authentication auth) {
+        requireCardBelongUser(cardId, auth);
+
+        var authUser = getCurrentAuthenticatedUser(auth);
+        var card = cardRepository.findById(cardId).get();
         if (card.getStatus() == CardStatus.BLOCKED)
             throw new CardAlreadyBlockedException();
 
-        var assignedUser = userRepository.findById(card.getUser().getId())
-                .orElseThrow(() -> new UserNotFoundException(card.getUser().getId()));
         cardBlockRequestRepository.save(CardBlockRequest.builder()
                 .cardToBlock(card)
-                .requesterUser(assignedUser)
+                .requesterUser(authUser)
                 .processingStatus(CardBlockRequest.Status.IN_PROGRESS)
                 .build());
     }
@@ -119,10 +118,11 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     @Override
     @Transactional
-    public void transferMoney(/*FIXME*/ User user, TransferBetweenCardsRequest dto) {
+    public void transferMoney(Authentication auth, TransferBetweenCardsRequest dto) {
         if (dto.fromCardNumber().equals(dto.toCardNumber()))
             throw new SelfTransferNotAllowedException();
 
+        var authUser = getCurrentAuthenticatedUser(auth);
         var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
                 .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
         var toCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.toCardNumber()))
@@ -130,7 +130,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
         if (fromCard.getStatus() != CardStatus.ACTIVE)
             throw new InactiveCardException();
-        if (!fromCard.getUser().equals(user) || !toCard.getUser().equals(user))
+        if (!fromCard.getUser().equals(authUser) || !toCard.getUser().equals(authUser))
             throw new CardOwnershipException();
         if (fromCard.getBalance().compareTo(dto.amount()) < 0) {
             throw new InsufficientFundsException();
@@ -141,5 +141,31 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
         cardRepository.save(fromCard);
         cardRepository.save(toCard);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GetCreatePatchCardResponse getById(Long cardId, Authentication auth) {
+        requireCardBelongUser(cardId, auth);
+        return cardMapper.toGetCardResponse(cardRepository.findById(cardId).get());
+    }
+
+    @Override
+    public BigDecimal getCardBalance(Long cardId, Authentication auth) {
+        requireCardBelongUser(cardId, auth);
+        return cardRepository.findById(cardId).get().getBalance();
+    }
+
+    private void requireCardBelongUser(Long cardId, Authentication auth) {
+        var authUser = getCurrentAuthenticatedUser(auth);
+        var card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new CardNotFoundException(cardId));
+        if (!card.getUser().equals(authUser))
+            throw new CardOwnerAuthUserMismatchException();
+    }
+
+    private User getCurrentAuthenticatedUser(Authentication auth) {
+        var userDetails = (SimpleUserDetails) auth.getPrincipal();
+        return userDetails.getUser();
     }
 }

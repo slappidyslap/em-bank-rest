@@ -1,11 +1,13 @@
 package kg.musabaev.em_bank_rest.service;
 
+import jakarta.validation.Valid;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
@@ -16,4 +18,8 @@ public interface UserService {
     void delete(Long id);
 
     GetCreatePatchUserResponse patch(Long id, PatchUserRequest dto);
+
+    GetCreatePatchUserResponse getById(Authentication authUser);
+
+    GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication authUser);
 }

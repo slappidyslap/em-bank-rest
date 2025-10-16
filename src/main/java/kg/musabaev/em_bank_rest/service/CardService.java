@@ -8,6 +8,7 @@ import kg.musabaev.em_bank_rest.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
 
@@ -21,13 +22,15 @@ public interface CardService {
 
     GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus);
 
-    Page<Card> getUserCards(User user, Pageable pageable/*, User authorizedUser*/);
-
-    BigDecimal getCardBalance(Long cardId);
-
-    void blockCard(Long cardId);
+    Page<GetCreatePatchCardResponse> getAllCards(Specification<Card> filter, Pageable pageable, Authentication auth);
 
     void delete(Long id);
 
-    void transferMoney(User user, TransferBetweenCardsRequest dto);
+    void transferMoney(Authentication auth, TransferBetweenCardsRequest dto);
+
+    GetCreatePatchCardResponse getById(Long cardId, Authentication auth);
+
+    BigDecimal getCardBalance(Long cardId, Authentication auth);
+
+    void requestBlockCard(Long cardId, Authentication auth);
 }

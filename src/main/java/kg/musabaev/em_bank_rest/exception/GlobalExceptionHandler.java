@@ -73,6 +73,11 @@ public class GlobalExceptionHandler {
     public void handleRefreshTokenExpired() {
     }
 
+    @ExceptionHandler(CardOwnerAuthUserMismatchException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public void handleCardOwnerAuthUserMismatch() {
+    }
+
     private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {
         return ResponseEntity.status(status.value()).body(Map.of("errors", msg));
     }

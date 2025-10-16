@@ -7,7 +7,7 @@ public record PatchUserRequest(
         @NotBlank(message = "{app.msg.not_blank}")
         String fullName,
         @NotBlank(message = "{app.msg.not_blank}")
-        @EmailOrNull
+        @EmailOrNull // todo проверить
         String email,
         @NotBlank(message = "{app.msg.not_blank}")
         String password) {

@@ -8,10 +8,13 @@ import kg.musabaev.em_bank_rest.exception.UserNotFoundException;
 import kg.musabaev.em_bank_rest.mapper.UserMapper;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +40,22 @@ public class SimpleUserService implements UserService {
             throw new UserAlreadyExistsException();
 
         userMapper.patch(dto, user);
-        return userMapper.toPatchUserResponse(userRepository.save(user));
+        var persistedUser = userRepository.save(user);
+        return userMapper.toPatchUserResponse(persistedUser);
+    }
+
+    @Override
+    public GetCreatePatchUserResponse getById(Authentication auth) {
+        var authUser = getCurrentAuthenticatedUser(auth);
+        return userMapper.toGetUserResponse(authUser);
+    }
+
+    @Override
+    public GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication auth) {
+        var authUser = getCurrentAuthenticatedUser(auth);
+        userMapper.patch(dto, authUser);
+        var persistedUser = userRepository.save(authUser);
+        return userMapper.toPatchUserResponse(persistedUser);
     }
 
     @Override
@@ -53,5 +71,10 @@ public class SimpleUserService implements UserService {
     public GetCreatePatchUserResponse getById(Long id) {
         return userMapper.toGetUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    private User getCurrentAuthenticatedUser(Authentication auth) {
+        var userDetails = (SimpleUserDetails) auth.getPrincipal();
+        return userDetails.getUser();
     }
 }
