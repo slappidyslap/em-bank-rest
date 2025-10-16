@@ -45,7 +45,7 @@ public class CardController {
             String status,
             @Positive(message = "{app.msg.positive}") Long userId,
             Pageable pageable) {
-        Specification<Card> spec = CardSpecification.build(status, userId);
+        Specification<Card> spec = CardSpecification.build(status, userId); // fixme
         return ResponseEntity.ok(cardService.getAllCards(spec, pageable));
     }
 
