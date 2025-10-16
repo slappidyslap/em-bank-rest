@@ -5,6 +5,7 @@ import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

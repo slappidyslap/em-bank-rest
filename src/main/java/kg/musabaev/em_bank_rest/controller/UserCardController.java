@@ -3,6 +3,7 @@ package kg.musabaev.em_bank_rest.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
+import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
@@ -41,7 +42,7 @@ public class UserCardController {
     }
 
     @GetMapping("/{cardId}/balance")
-    public ResponseEntity<BigDecimal> getBalance(
+    public ResponseEntity<Pair<BigDecimal>> getBalance(
             @Positive(message = "{app.msg.positive}") @PathVariable Long cardId,
             @AuthenticationPrincipal Authentication auth) {
         return ResponseEntity.ok(cardService.getCardBalance(cardId, auth));

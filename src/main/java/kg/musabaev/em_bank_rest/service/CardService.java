@@ -1,10 +1,10 @@
 package kg.musabaev.em_bank_rest.service;
 
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
+import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
-import kg.musabaev.em_bank_rest.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,7 +30,7 @@ public interface CardService {
 
     GetCreatePatchCardResponse getById(Long cardId, Authentication auth);
 
-    BigDecimal getCardBalance(Long cardId, Authentication auth);
+    Pair<BigDecimal> getCardBalance(Long cardId, Authentication auth);
 
     void requestBlockCard(Long cardId, Authentication auth);
 }

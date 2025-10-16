@@ -1,7 +1,7 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
+import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
@@ -151,9 +151,9 @@ public class SimpleCardService implements CardService {
     }
 
     @Override
-    public BigDecimal getCardBalance(Long cardId, Authentication auth) {
+    public Pair<BigDecimal> getCardBalance(Long cardId, Authentication auth) {
         requireCardBelongUser(cardId, auth);
-        return cardRepository.findById(cardId).get().getBalance();
+        return Pair.of("balance", cardRepository.findById(cardId).get().getBalance());
     }
 
     private void requireCardBelongUser(Long cardId, Authentication auth) {

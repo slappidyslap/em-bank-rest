@@ -1,5 +1,6 @@
 package kg.musabaev.em_bank_rest.exception;
 
+import kg.musabaev.em_bank_rest.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({CardNotFoundException.class, UserNotFoundException.class, RefreshTokenNotFoundException.class})
-    ResponseEntity<Map<String, String>> handleResourceNotFound(Exception ex) {
+    ResponseEntity<Pair<String>> handleResourceNotFound(Exception ex) {
         return response(ex.getMessage(), NOT_FOUND);
     }
 
@@ -30,12 +30,12 @@ public class GlobalExceptionHandler {
             SelfTransferNotAllowedException.class
     })
     @ResponseStatus(BAD_REQUEST)
-    ResponseEntity<Map<String, String>> handleFieldNotValid(FieldNotValidException ex) {
+    ResponseEntity<Pair<String>> handleFieldNotValid(FieldNotValidException ex) {
         return response(ex.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, List<String>>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Pair<List<String>>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> messages = ex
                 .getBindingResult()
                 .getFieldErrors()
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
-    public ResponseEntity<Map<String, List<String>>> handleHandlerMethodValidation(HandlerMethodValidationException ex) {
+    public ResponseEntity<Pair<List<String>>> handleHandlerMethodValidation(HandlerMethodValidationException ex) {
         List<String> messages = ex.getParameterValidationResults()
                 .stream()
                 .flatMap(r -> r.getResolvableErrors().stream())
@@ -78,11 +78,11 @@ public class GlobalExceptionHandler {
     public void handleCardOwnerAuthUserMismatch() {
     }
 
-    private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(Map.of("errors", msg));
+    private ResponseEntity<Pair<List<String>>> response(List<String> msg, HttpStatus status) {
+        return ResponseEntity.status(status.value()).body(Pair.of("errors", msg));
     }
 
-    private ResponseEntity<Map<String, String>> response(String msg, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(Map.of("errors", msg));
+    private ResponseEntity<Pair<String>> response(String msg, HttpStatus status) {
+        return ResponseEntity.status(status.value()).body(Pair.of("errors", msg));
     }
 }
