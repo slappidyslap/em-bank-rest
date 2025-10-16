@@ -11,7 +11,6 @@ import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,34 +23,34 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<Page<User>> getAll(UserSpecification spec, Pageable pageable) {
-        return ResponseEntity.ok(userRepository.findAll(spec.build(), pageable));
+    public Page<User> getAll(UserSpecification spec, Pageable pageable) {
+        return userRepository.findAll(spec.build(), pageable);
     }
 
     @Override
-    public ResponseEntity<User> patch(Long id, PatchUserRequest dto) {
+    @Transactional
+    public User patch(Long id, PatchUserRequest dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         if (dto.email() != null && userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();
 
         userMapper.patch(dto, user);
-        return ResponseEntity.ok(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<?> delete(Long id) {
+    public void delete(Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         userRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<User> getById(Long id) {
-        return ResponseEntity.ok(userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id)));
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 }

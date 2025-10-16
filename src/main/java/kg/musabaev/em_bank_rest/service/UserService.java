@@ -5,15 +5,14 @@ import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    ResponseEntity<User> getById(Long id);
+    User getById(Long id);
 
-    ResponseEntity<Page<User>> getAll(UserSpecification filter, Pageable pageable);
+    Page<User> getAll(UserSpecification filter, Pageable pageable);
 
-    ResponseEntity<?> delete(Long id);
+    void delete(Long id);
 
-    ResponseEntity<User> patch(Long id, PatchUserRequest dto);
+    User patch(Long id, PatchUserRequest dto);
 }

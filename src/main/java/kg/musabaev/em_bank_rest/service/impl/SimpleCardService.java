@@ -10,6 +10,7 @@ import kg.musabaev.em_bank_rest.exception.*;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
+import kg.musabaev.em_bank_rest.service.UserService;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
 
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
-    private final SimpleUserService userService;
+    private final UserService userService;
     private final SomePaymentSystemProvider paymentSystemProvider;
     private final CardBlockRequestRepository cardBlockRequestRepository;
 
@@ -105,6 +106,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         cardRepository.deleteById(id);
     }

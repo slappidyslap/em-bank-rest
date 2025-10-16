@@ -23,21 +23,22 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Page<User>> getAll(
             @ModelAttribute UserSpecification filters, Pageable pageable) {
-        return userService.getAll(filters, pageable);
+        return ResponseEntity.ok(userService.getAll(filters, pageable));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getById(@Positive @PathVariable Long id) {
-        return userService.getById(id);
+        return ResponseEntity.ok(userService.getById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@Positive @PathVariable Long id) {
-        return userService.delete(id);
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<User> patch(@Positive @PathVariable Long id, @Valid @RequestBody PatchUserRequest dto) {
-        return userService.patch(id, dto);
+        return ResponseEntity.ok(userService.patch(id, dto));
     }
 }
