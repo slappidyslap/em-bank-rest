@@ -6,8 +6,9 @@ import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.mapper.util.CardMapperUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = CardMapperUtil.class)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = CardMapperUtil.class)
 public interface CardMapper {
 
     Card toEntity(CreateCardRequest dto);

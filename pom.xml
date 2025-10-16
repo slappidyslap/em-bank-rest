@@ -74,6 +74,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.13.0</version>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
@@ -126,6 +145,17 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>5.0.1</version>
+				<configuration>
+					<changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
+					<url>jdbc:postgresql://localhost:5432/em_bank_rest</url>
+					<username>postgres</username> <!--TODO как можно из env доставать-->
+					<password>1</password>
 				</configuration>
 			</plugin>
 		</plugins>

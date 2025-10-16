@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,6 +64,16 @@ public class GlobalExceptionHandler {
                 })
                 .toList();
         return response(messages, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(CONFLICT)
+    public void handleUserAlreadyExists() {
+    }
+
+    @ExceptionHandler(UserUnauthorizedException.class)
+    @ResponseStatus(UNAUTHORIZED)
+    public void handleUserUnauthorized() {
     }
 
     private ResponseEntity<Map<String, List<String>>> response(List<String> msg, HttpStatus status) {

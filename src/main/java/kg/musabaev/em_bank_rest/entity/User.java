@@ -1,10 +1,10 @@
 package kg.musabaev.em_bank_rest.entity;
 
 import jakarta.persistence.*;
+import kg.musabaev.em_bank_rest.security.Role;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -28,7 +28,13 @@ public class User {
     @NaturalId(mutable = true)
     private String email;
 
-    // todo чекни orphanRemoval нужно ли
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Column(nullable = false)
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Card> cards;
