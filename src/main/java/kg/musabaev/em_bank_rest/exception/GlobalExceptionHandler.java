@@ -24,7 +24,14 @@ public class GlobalExceptionHandler {
         return response(ex.getMessage(), NOT_FOUND);
     }
 
-    @ExceptionHandler(FieldNotValidException.class)
+    @ExceptionHandler({
+            FieldNotValidException.class,
+            CardAlreadyBlockedException.class,
+            CardOwnershipException.class,
+            InactiveCardException.class,
+            InsufficientFundsException.class,
+            SelfTransferNotAllowedException.class
+    })
     @ResponseStatus(BAD_REQUEST)
     ResponseEntity<Map<String, String>> handleFieldNotValid(FieldNotValidException ex) {
         return response(ex.getMessage(), BAD_REQUEST);

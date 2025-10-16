@@ -6,7 +6,7 @@ import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
 import kg.musabaev.em_bank_rest.entity.User;
-import kg.musabaev.em_bank_rest.exception.CardNotFoundException;
+import kg.musabaev.em_bank_rest.exception.*;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
 import kg.musabaev.em_bank_rest.repository.CardRepository;
@@ -17,12 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +90,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         if (card.getStatus() == CardStatus.BLOCKED)
-            throw new ResponseStatusException(BAD_REQUEST, "couldn't block already blocked card");
+            throw new CardAlreadyBlockedException();
 
         var assignedUser = userService.getById(1L); // FIXME
         cardBlockRequestRepository.save(CardBlockRequest.builder()
@@ -112,7 +109,7 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
     @Transactional
     public void transferMoney(/*FIXME*/ User user, TransferBetweenCardsRequest dto) {
         if (dto.fromCardNumber().equals(dto.toCardNumber()))
-            throw new ResponseStatusException(BAD_REQUEST, "Source and destination cards must be different");
+            throw new SelfTransferNotAllowedException();
 
         var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
                 .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
@@ -120,11 +117,11 @@ public class SimpleCardService implements kg.musabaev.em_bank_rest.service.CardS
                 .orElseThrow(() -> new CardNotFoundException(dto.toCardNumber()));
 
         if (fromCard.getStatus() != CardStatus.ACTIVE)
-            throw new ResponseStatusException(BAD_REQUEST, "Source card must be active");
+            throw new InactiveCardException();
         if (!fromCard.getUser().equals(user) || !toCard.getUser().equals(user))
-            throw new ResponseStatusException(BAD_REQUEST, "Both cards must belong to one user");
+            throw new CardOwnershipException();
         if (fromCard.getBalance().compareTo(dto.amount()) < 0) {
-            throw new ResponseStatusException(BAD_REQUEST, "Insufficient funds");
+            throw new InsufficientFundsException();
         }
 
         fromCard.setBalance(fromCard.getBalance().subtract(dto.amount()));
