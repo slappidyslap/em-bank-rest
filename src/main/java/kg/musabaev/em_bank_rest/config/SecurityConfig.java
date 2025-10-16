@@ -18,7 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -28,13 +27,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api-docs/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/*/auth/**").permitAll()
+                        .requestMatchers("/api/**").permitAll() // fixme временно
+                        .anyRequest().authenticated()
                 )
+                .csrf(AbstractHttpConfigurer::disable) //todo
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

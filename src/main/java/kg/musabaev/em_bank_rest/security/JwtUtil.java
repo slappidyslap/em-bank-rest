@@ -1,11 +1,13 @@
 package kg.musabaev.em_bank_rest.security;
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.UserNotFoundException;
 import kg.musabaev.em_bank_rest.repository.RefreshTokenRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -72,5 +74,10 @@ public class JwtUtil {
                         .expiration(Instant.now().plusMillis(REFRESH_TOKEN_EXPIRATION))
                         .build())
                 .getToken());
+    }
+
+    public String getAccessTokenFromRequest(HttpServletRequest request) {
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return authorization != null && authorization.startsWith("Bearer") ? authorization.substring(7) : null;
     }
 }
