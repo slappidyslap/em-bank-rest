@@ -28,11 +28,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/api/*/auth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/openapi/**").permitAll()
+                        .requestMatchers("/swagger-ui*/**").permitAll()
                         .requestMatchers("/scalar/**").permitAll()
-                        .requestMatchers("/**").permitAll() // fixme временно
+                        .requestMatchers("/api/*/auth/**").permitAll()
+                        .requestMatchers("/api/*/users/me/**").hasRole("USER")
+                        .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/*/users/me/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) //todo
                 .exceptionHandling(exceptionHandling -> exceptionHandling
