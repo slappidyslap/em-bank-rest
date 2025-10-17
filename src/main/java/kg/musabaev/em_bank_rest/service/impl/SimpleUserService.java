@@ -45,12 +45,14 @@ public class SimpleUserService implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetCreatePatchUserResponse getById(Authentication auth) {
         var authUser = getCurrentAuthenticatedUser(auth);
         return userMapper.toGetUserResponse(authUser);
     }
 
     @Override
+    @Transactional
     public GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication auth) {
         var authUser = getCurrentAuthenticatedUser(auth);
         userMapper.patch(dto, authUser);

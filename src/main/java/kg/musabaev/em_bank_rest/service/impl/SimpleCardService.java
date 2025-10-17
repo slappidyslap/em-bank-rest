@@ -151,6 +151,7 @@ public class SimpleCardService implements CardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Pair<BigDecimal> getBalance(Long cardId, Authentication auth) {
         requireCardBelongUser(cardId, auth);
         return Pair.of("balance", cardRepository.findById(cardId).get().getBalance());
