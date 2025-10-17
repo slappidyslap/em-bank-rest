@@ -7,6 +7,7 @@ import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
@@ -26,21 +27,21 @@ public class AdminUserController {
         return ResponseEntity.ok(userService.getAll(filters, pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetCreatePatchUserResponse> getUserById(@Positive @PathVariable Long id) {
-        return ResponseEntity.ok(userService.getById(id));
+    @GetMapping("/{userId}")
+    public ResponseEntity<GetCreatePatchUserResponse> getUserById(@Positive @PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getById(userId));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@Positive @PathVariable Long id) {
-        userService.delete(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@Positive @PathVariable Long userId) {
+        userService.delete(userId);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{userId}")
     public ResponseEntity<GetCreatePatchUserResponse> updateUser(
-            @Positive @PathVariable Long id,
+            @Positive @PathVariable Long userId,
             @Valid @RequestBody PatchUserRequest dto) {
-        return ResponseEntity.ok(userService.patch(id, dto));
+        return ResponseEntity.ok(userService.patch(userId, dto));
     }
 }

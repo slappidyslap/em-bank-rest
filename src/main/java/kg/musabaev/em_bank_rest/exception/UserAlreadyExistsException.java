@@ -8,6 +8,6 @@ public class UserAlreadyExistsException extends AbstractHttpStatusException {
         return HttpStatus.CONFLICT;
     }
     public UserAlreadyExistsException() {
-        super("User already exists");
+        super("User with given email already exists");
     }
 }

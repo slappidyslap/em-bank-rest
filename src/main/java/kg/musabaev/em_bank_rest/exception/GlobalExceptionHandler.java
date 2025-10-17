@@ -2,6 +2,7 @@ package kg.musabaev.em_bank_rest.exception;
 
 import kg.musabaev.em_bank_rest.util.Pair;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +21,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AbstractHttpStatusException.class)
     ResponseEntity<Pair<String>> handleFieldNotValid(AbstractHttpStatusException ex) {
         return response(ex.getMessage(), ex.httpStatus());
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    ResponseEntity<Pair<String>> handlePropertyReference(PropertyReferenceException ex) {
+        return response(ex.getMessage(), BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

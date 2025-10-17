@@ -1,14 +1,14 @@
 package kg.musabaev.em_bank_rest.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import kg.musabaev.em_bank_rest.util.constraint.EmailOrNull;
 
 public record PatchUserRequest(
-        @NotBlank(message = "{app.msg.not_blank}")
+        @NotBlank
         String fullName,
-        @NotBlank(message = "{app.msg.not_blank}")
-        @EmailOrNull // todo проверить
+        @NotBlank
+        @Email
         String email,
-        @NotBlank(message = "{app.msg.not_blank}")
+        @NotBlank
         String password) {
 }

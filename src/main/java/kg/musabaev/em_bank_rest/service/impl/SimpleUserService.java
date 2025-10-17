@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,8 @@ public class SimpleUserService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -36,11 +39,22 @@ public class SimpleUserService implements UserService {
     public GetCreatePatchUserResponse patch(Long id, PatchUserRequest dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
-        if (dto.email() != null && userRepository.existsByEmail(dto.email()))
+        if (user.getEmail().equals(dto.email())) {
+            userMapper.patch(dto, user);
+            user.setPassword(passwordEncoder.encode(dto.password()));
+            var persistedUser = userRepository.saveAndFlush(user);
+            return userMapper.toPatchUserResponse(persistedUser);
+        }
+        else if (userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();
+        else
+            return patchUser(dto, user);
+    }
 
+    private GetCreatePatchUserResponse patchUser(PatchUserRequest dto, User user) {
         userMapper.patch(dto, user);
-        var persistedUser = userRepository.save(user);
+        user.setPassword(passwordEncoder.encode(dto.password()));
+        var persistedUser = userRepository.saveAndFlush(user);
         return userMapper.toPatchUserResponse(persistedUser);
     }
 

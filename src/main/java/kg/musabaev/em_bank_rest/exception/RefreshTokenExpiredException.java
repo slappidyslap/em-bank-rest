@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class RefreshTokenExpiredException extends AbstractHttpStatusException {
     @Override
     public HttpStatus httpStatus() {
-        return HttpStatus.BAD_REQUEST;
+        return HttpStatus.UNAUTHORIZED;
     }
     public RefreshTokenExpiredException() {
         super("Given refresh token expired");

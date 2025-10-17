@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
 public record UserSpecification(
-        String email, // TOdo validation
+        String email,
         String fullName,
         Long id,
         Role role) {

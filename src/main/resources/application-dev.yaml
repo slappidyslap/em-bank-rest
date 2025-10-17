@@ -10,6 +10,7 @@ spring:
         use_sql_comments: true
     hibernate:
       ddl-auto: validate
+    show-sql: true
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 logging:

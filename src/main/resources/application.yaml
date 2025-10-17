@@ -3,3 +3,6 @@ spring:
     name: em-bank-rest
   profiles:
     active: @spring.profiles.active@
+springdoc:
+  swagger-ui:
+    url: /openapi.yaml

@@ -49,11 +49,11 @@ public class AdminCardController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{cardId}")
     public ResponseEntity<GetCreatePatchCardResponse> updateCardStatus(
-            @PathVariable Long id,
+            @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
             @AuthenticationPrincipal Authentication auth) { //todo valid
-        return ResponseEntity.ok(cardService.patchStatus(id, dto, auth));
+        return ResponseEntity.ok(cardService.patchStatus(cardId, dto, auth));
     }
 }

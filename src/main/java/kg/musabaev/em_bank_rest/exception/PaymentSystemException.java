@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class PaymentSystemException extends AbstractHttpStatusException {
     @Override
     public HttpStatus httpStatus() {
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return HttpStatus.SERVICE_UNAVAILABLE;
     }
 
     public PaymentSystemException(String message) {
