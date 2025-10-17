@@ -17,6 +17,8 @@ get:
       description: Invalid userId
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:
@@ -42,6 +44,8 @@ delete:
       description: Invalid userId
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
 patch:
@@ -71,6 +75,8 @@ patch:
       description: User with given email already exists
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:

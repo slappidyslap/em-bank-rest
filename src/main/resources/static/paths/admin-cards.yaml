@@ -45,15 +45,13 @@ get:
           type: string
   responses:
     "400":
-      description: Bad Request
-    "404":
-      description: Not Found
-    "409":
-      description: Conflict
+      description: Invalid query params
     "503":
-      description: Service Unavailable
+      description: Payment service unavailable
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:
@@ -72,15 +70,15 @@ post:
     required: true
   responses:
     "400":
-      description: Bad Request
+      description: Field invalid
     "404":
-      description: Not Found
-    "409":
-      description: Conflict
+      description: User not found
     "503":
-      description: Service Unavailable
+      description: Payment service unavailable
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:

@@ -21,6 +21,8 @@ get:
       description: Service Unavailable
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:
@@ -50,6 +52,8 @@ delete:
       description: Service Unavailable
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:
@@ -88,6 +92,8 @@ patch:
       description: Service Unavailable
     "401":
       description: Unauthorized
+    "403":
+      description: Forbidden
     "200":
       description: OK
       content:

@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,7 @@ public class AdminCardController {
     private final CardService cardService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public GetCreatePatchCardResponse createCard(
             @Valid @RequestBody CreateCardRequest dto) {
         return cardService.create(dto);
@@ -40,20 +39,20 @@ public class AdminCardController {
 
     @GetMapping("/{cardId}")
     public GetCreatePatchCardResponse getCardById(
-            @Positive(message = "{app.msg.positive}") Long cardId) {
+            @Positive @PathVariable Long cardId) {
         return cardService.getById(cardId);
     }
 
     @DeleteMapping("/{cardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCard(
-            @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
+            @Positive @PathVariable Long cardId) {
         cardService.delete(cardId);
     }
 
     @PatchMapping("/{cardId}")
     public GetCreatePatchCardResponse updateCardStatus(
-            @PathVariable Long cardId,
+            @Positive @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
             @AuthenticationPrincipal Authentication auth) { //todo valid
         return cardService.patchStatus(cardId, dto, auth);
