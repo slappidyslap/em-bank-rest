@@ -10,6 +10,7 @@ import kg.musabaev.em_bank_rest.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,36 +25,37 @@ public class AdminCardController {
     private final CardService cardService;
 
     @PostMapping
-    public ResponseEntity<GetCreatePatchCardResponse> createCard(
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public GetCreatePatchCardResponse createCard(
             @Valid @RequestBody CreateCardRequest dto) {
-        return ResponseEntity.accepted().body(cardService.create(dto));
+        return cardService.create(dto);
     }
 
     @GetMapping
-    public ResponseEntity<PagedModel<GetCreatePatchCardResponse>> getAllCards(
+    public PagedModel<GetCreatePatchCardResponse> getAllCards(
             @ModelAttribute CardSpecification filters,
             Pageable pageable) {
-        return ResponseEntity.ok(cardService.getAll(filters, pageable));
+        return cardService.getAll(filters, pageable);
     }
 
     @GetMapping("/{cardId}")
-    public ResponseEntity<GetCreatePatchCardResponse> getCardById(
+    public GetCreatePatchCardResponse getCardById(
             @Positive(message = "{app.msg.positive}") Long cardId) {
-        return ResponseEntity.ok(cardService.getById(cardId));
+        return cardService.getById(cardId);
     }
 
     @DeleteMapping("/{cardId}")
-    public ResponseEntity<?> deleteCard(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCard(
             @Positive(message = "{app.msg.positive}") @PathVariable Long cardId) {
         cardService.delete(cardId);
-        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{cardId}")
-    public ResponseEntity<GetCreatePatchCardResponse> updateCardStatus(
+    public GetCreatePatchCardResponse updateCardStatus(
             @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
             @AuthenticationPrincipal Authentication auth) { //todo valid
-        return ResponseEntity.ok(cardService.patchStatus(cardId, dto, auth));
+        return cardService.patchStatus(cardId, dto, auth);
     }
 }

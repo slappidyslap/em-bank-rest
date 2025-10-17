@@ -1,0 +1,61 @@
+TransferBetweenCardsRequest:
+  type: object
+  properties:
+    fromCardNumber:
+      type: string
+      pattern: "[0-9]{16}"
+    toCardNumber:
+      type: string
+      pattern: "[0-9]{16}"
+    amount:
+      type: number
+      minimum: 1
+  required:
+    - amount
+    - fromCardNumber
+    - toCardNumber
+CreateCardRequest:
+  type: object
+  properties:
+    userId:
+      type: integer
+      format: int64
+  required:
+    - userId
+GetCreatePatchCardResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    numberMasked:
+      type: string
+    expiry:
+      type: string
+      format: date
+    owner:
+      type: string
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - BLOCKED
+        - EXPIRED
+UpdateStatusCardRequest:
+  type: object
+  properties:
+    status:
+      type: string
+      enum:
+        - ACTIVE
+        - BLOCKED
+        - EXPIRED
+PagedModelGetCreatePatchCardResponse:
+  type: object
+  properties:
+    content:
+      type: array
+      items:
+        $ref: "#/GetCreatePatchCardResponse"
+    page:
+      $ref: "./common.yaml#/PageMetadata"

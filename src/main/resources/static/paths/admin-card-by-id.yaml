@@ -1,0 +1,96 @@
+get:
+  tags:
+    - admin-card-controller
+  operationId: getCardById
+  parameters:
+    - name: cardId
+      in: query
+      required: true
+      schema:
+        type: integer
+        format: int64
+        exclusiveMinimum: 0
+  responses:
+    "400":
+      description: Bad Request
+    "404":
+      description: Not Found
+    "409":
+      description: Conflict
+    "503":
+      description: Service Unavailable
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/card.yaml#/GetCreatePatchCardResponse"
+delete:
+  tags:
+    - admin-card-controller
+  operationId: deleteCard
+  parameters:
+    - name: cardId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        exclusiveMinimum: 0
+  responses:
+    "400":
+      description: Bad Request
+    "404":
+      description: Not Found
+    "409":
+      description: Conflict
+    "503":
+      description: Service Unavailable
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            type: object
+patch:
+  tags:
+    - admin-card-controller
+  operationId: updateCardStatus
+  parameters:
+    - name: cardId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/card.yaml#/UpdateStatusCardRequest"
+    required: true
+  responses:
+    "400":
+      description: Bad Request
+      content:
+        'application/json':
+          schema:
+            type: object
+    "404":
+      description: Not Found
+    "409":
+      description: Conflict
+    "503":
+      description: Service Unavailable
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/card.yaml#/GetCreatePatchCardResponse"

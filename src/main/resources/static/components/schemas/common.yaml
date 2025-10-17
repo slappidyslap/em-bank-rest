@@ -13,3 +13,10 @@ PageMetadata:
     totalPages:
       type: integer
       format: int64
+PairBigDecimal:
+  type: object
+  properties:
+    key:
+      type: string
+    value:
+      type: number
