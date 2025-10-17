@@ -1,12 +1,15 @@
 package kg.musabaev.em_bank_rest.security;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.UserNotFoundException;
 import kg.musabaev.em_bank_rest.repository.RefreshTokenRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +20,17 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtUtil {
 
+    private final String SECRET = "mominfactilovefrogsfrogsfrogsfrogsfrogsfrogs";
     private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60; // 1 час
     private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 дней
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    SecretKey getSigningKey() {
-        return Jwts.SIG.HS256.key().build();
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
     }
 
     public String generateAccessToken(String email) {
@@ -33,7 +38,7 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
-                .signWith(getSigningKey())
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -54,6 +59,7 @@ public class JwtUtil {
                     .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
+            log.error(e.getMessage());
             return false;
         }
     }

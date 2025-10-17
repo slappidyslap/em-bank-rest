@@ -32,9 +32,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/*/auth/**").permitAll()
-                        .requestMatchers("/api/**").permitAll() // fixme временно
-                        .anyRequest().authenticated()
-                )
+//                        .requestMatchers("/api/**").permitAll() // fixme временно
+                        .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) //todo
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedAuthenticationEntryPoint))

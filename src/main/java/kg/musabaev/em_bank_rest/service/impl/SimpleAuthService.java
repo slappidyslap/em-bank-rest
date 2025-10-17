@@ -53,7 +53,7 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthenticateRefreshUserResponse login(AuthenticateRequest dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.email(),
