@@ -40,10 +40,7 @@ public class SimpleUserService implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         if (user.getEmail().equals(dto.email())) {
-            userMapper.patch(dto, user);
-            user.setPassword(passwordEncoder.encode(dto.password()));
-            var persistedUser = userRepository.saveAndFlush(user);
-            return userMapper.toPatchUserResponse(persistedUser);
+            return patchUser(dto, user);
         }
         else if (userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();

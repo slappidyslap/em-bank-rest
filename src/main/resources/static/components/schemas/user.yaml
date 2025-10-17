@@ -1,0 +1,42 @@
+GetCreatePatchUserResponse:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+    fullName:
+      type: string
+    email:
+      type: string
+    role:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+
+PatchUserRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+      minLength: 1
+    email:
+      type: string
+      minLength: 1
+    password:
+      type: string
+      minLength: 1
+  required:
+    - email
+    - fullName
+    - password
+
+PagedModelGetCreatePatchUserResponse:
+  type: object
+  properties:
+    content:
+      type: array
+      items:
+        $ref: "#/GetCreatePatchUserResponse"
+    page:
+      $ref: "./common.yaml#/PageMetadata"
