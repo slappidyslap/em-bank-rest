@@ -7,8 +7,8 @@ import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<Page<GetCreatePatchUserResponse>> getAllUser(
+    public ResponseEntity<PagedModel<GetCreatePatchUserResponse>> getAllUser(
             @ModelAttribute UserSpecification filters, Pageable pageable) {
         return ResponseEntity.ok(userService.getAll(filters, pageable));
     }

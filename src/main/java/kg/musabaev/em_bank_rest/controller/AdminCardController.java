@@ -8,8 +8,8 @@ import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.service.CardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +28,7 @@ public class AdminCardController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<GetCreatePatchCardResponse>> getAllCards(
+    public ResponseEntity<PagedModel<GetCreatePatchCardResponse>> getAllCards(
             @ModelAttribute CardSpecification filters,
             Pageable pageable) {
         return ResponseEntity.ok(cardService.getAll(filters, pageable));

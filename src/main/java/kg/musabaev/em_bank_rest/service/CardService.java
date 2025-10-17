@@ -5,8 +5,8 @@ import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.util.Pair;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
@@ -17,11 +17,11 @@ public interface CardService {
 
     GetCreatePatchCardResponse getById(Long id);
 
-    Page<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
+    PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
 
     GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus);
 
-    Page<GetCreatePatchCardResponse> getAll(CardSpecification filter, Pageable pageable, Authentication auth);
+    PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filter, Pageable pageable, Authentication auth);
 
     void delete(Long id);
 

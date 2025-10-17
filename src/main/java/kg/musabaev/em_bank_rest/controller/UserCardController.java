@@ -8,8 +8,8 @@ import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +26,7 @@ public class UserCardController {
     private final SimpleCardService cardService;
 
     @GetMapping
-    public ResponseEntity<Page<GetCreatePatchCardResponse>> getMyAllCards(
+    public ResponseEntity<PagedModel<GetCreatePatchCardResponse>> getMyAllCards(
             @ModelAttribute CardSpecification filters,
             Pageable pageable,
             @AuthenticationPrincipal Authentication auth) {

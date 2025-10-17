@@ -1,19 +1,17 @@
 package kg.musabaev.em_bank_rest.service;
 
-import jakarta.validation.Valid;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
-import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
     GetCreatePatchUserResponse getById(Long id);
 
-    Page<GetCreatePatchUserResponse> getAll(UserSpecification filter, Pageable pageable);
+    PagedModel<GetCreatePatchUserResponse> getAll(UserSpecification filter, Pageable pageable);
 
     void delete(Long id);
 

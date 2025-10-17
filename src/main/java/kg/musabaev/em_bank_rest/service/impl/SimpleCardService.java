@@ -18,8 +18,8 @@ import kg.musabaev.em_bank_rest.service.CardService;
 import kg.musabaev.em_bank_rest.util.Pair;
 import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,9 +66,9 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreatePatchCardResponse> getAll(CardSpecification filters, Pageable pageable) {
+    public PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filters, Pageable pageable) {
         var cards = cardRepository.findAll(filters.build(), pageable);
-        return cards.map(cardMapper::toGetCardResponse);
+        return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
 
     // fixme надо удостовериться что заявка
@@ -84,13 +84,13 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<GetCreatePatchCardResponse> getAll(
+    public PagedModel<GetCreatePatchCardResponse> getAll(
             CardSpecification filters,
             Pageable pageable,
             Authentication auth) {
         var authUser = getCurrentAuthenticatedUser(auth);
         var cards = cardRepository.findAllByUser(authUser, filters.build(), pageable);
-        return cards.map(cardMapper::toGetCardResponse);
+        return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
 
     @Override
