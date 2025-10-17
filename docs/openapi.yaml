@@ -1,0 +1,1158 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/v1/users/me/cards/{cardId}/request-block:
+    post:
+      tags:
+        - User card
+      operationId: requestBlock
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/v1/users/me/cards/transfer:
+    post:
+      tags:
+        - user-card-controller
+      operationId: transferMoney
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferBetweenCardsRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/v1/auth/signup:
+    post:
+      tags:
+        - auth-controller
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupUserRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchUserResponse"
+  /api/v1/auth/refresh:
+    post:
+      tags:
+        - auth-controller
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTokensRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthenticateRefreshUserResponse"
+  /api/v1/auth/login:
+    post:
+      tags:
+        - auth-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthenticateRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthenticateRefreshUserResponse"
+  /api/v1/admin/cards:
+    get:
+      tags:
+        - admin-card-controller
+      operationId: getAllCards
+      parameters:
+        - name: filters
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CardSpecification"
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelGetCreatePatchCardResponse"
+    post:
+      tags:
+        - admin-card-controller
+      operationId: createCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCardRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchCardResponse"
+  /api/v1/users/me:
+    get:
+      tags:
+        - user-controller
+      operationId: getUserById
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchUserResponse"
+    patch:
+      tags:
+        - user-controller
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchUserRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchUserResponse"
+  /api/v1/admin/users/{id}:
+    get:
+      tags:
+        - admin-user-controller
+      operationId: getUserById_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchUserResponse"
+    delete:
+      tags:
+        - admin-user-controller
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    patch:
+      tags:
+        - admin-user-controller
+      operationId: updateUser_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatchUserRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchUserResponse"
+  /api/v1/admin/cards/{id}:
+    patch:
+      tags:
+        - admin-card-controller
+      operationId: updateCardStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStatusCardRequest"
+        required: true
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchCardResponse"
+  /api/v1/users/me/cards:
+    get:
+      tags:
+        - user-card-controller
+      operationId: getMyAllCards
+      parameters:
+        - name: filters
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/CardSpecification"
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelGetCreatePatchCardResponse"
+  /api/v1/users/me/cards/{cardId}:
+    get:
+      tags:
+        - user-card-controller
+      operationId: getById
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchCardResponse"
+  /api/v1/users/me/cards/{cardId}/balance:
+    get:
+      tags:
+        - user-card-controller
+      operationId: getBalance
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PairBigDecimal"
+  /api/v1/admin/users:
+    get:
+      tags:
+        - admin-user-controller
+      operationId: getAllUser
+      parameters:
+        - name: filters
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserSpecification"
+        - name: pageable
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/Pageable"
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelGetCreatePatchUserResponse"
+  /api/v1/admin/cards/{cardId}:
+    get:
+      tags:
+        - admin-card-controller
+      operationId: getCardById
+      parameters:
+        - name: cardId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCreatePatchCardResponse"
+    delete:
+      tags:
+        - admin-card-controller
+      operationId: deleteCard
+      parameters:
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+      responses:
+        "404":
+          description: Not Found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: object
+        "409":
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                type: object
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: object
+        "503":
+          description: Service Unavailable
+          content:
+            '*/*':
+              schema:
+                type: object
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    TransferBetweenCardsRequest:
+      type: object
+      properties:
+        fromCardNumber:
+          type: string
+          pattern: "[0-9]{16}"
+        toCardNumber:
+          type: string
+          pattern: "[0-9]{16}"
+        amount:
+          type: number
+          minimum: 1
+      required:
+        - amount
+        - fromCardNumber
+        - toCardNumber
+    SignupUserRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - fullName
+        - password
+    GetCreatePatchUserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        fullName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum:
+            - USER
+            - ADMIN
+    UpdateTokensRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    AuthenticateRefreshUserResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    AuthenticateRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - password
+    CreateCardRequest:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+      required:
+        - userId
+    GetCreatePatchCardResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        numberMasked:
+          type: string
+        expiry:
+          type: string
+          format: date
+        owner:
+          type: string
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - EXPIRED
+    PatchUserRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+      required:
+        - email
+        - fullName
+        - password
+    UpdateStatusCardRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - ACTIVE
+            - BLOCKED
+            - EXPIRED
+    CardSpecification:
+      type: object
+      properties:
+        status:
+          type: string
+        userId:
+          type: integer
+          format: int64
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelGetCreatePatchCardResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetCreatePatchCardResponse"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    PairBigDecimal:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: number
+    UserSpecification:
+      type: object
+      properties:
+        email:
+          type: string
+        fullName:
+          type: string
+        id:
+          type: integer
+          format: int64
+        role:
+          type: string
+          enum:
+            - USER
+            - ADMIN
+    PagedModelGetCreatePatchUserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/GetCreatePatchUserResponse"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
