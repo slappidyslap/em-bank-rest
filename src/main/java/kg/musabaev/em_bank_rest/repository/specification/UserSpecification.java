@@ -1,17 +1,25 @@
 package kg.musabaev.em_bank_rest.repository.specification;
 
 import kg.musabaev.em_bank_rest.entity.User;
+import kg.musabaev.em_bank_rest.exception.JsonToEnumConversionFailedException;
 import kg.musabaev.em_bank_rest.security.Role;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+
+import java.util.Locale;
 
 public record UserSpecification(
         String email,
         String fullName,
         Long id,
-        Role role) {
+        String role) {
 
     public Specification<User> build() {
+        try {
+            Role.valueOf(role.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new JsonToEnumConversionFailedException(role, Role.class);
+        }
         return withEmail()
                 .and(withFullName())
                 .and(withId())
@@ -37,7 +45,7 @@ public record UserSpecification(
     }
 
     private Specification<User> withRole() {
-        return ((root, query, cb) -> role != null
+        return ((root, query, cb) -> StringUtils.hasText(role)
                 ? cb.equal(root.get("role"), role)
                 : null);
     }

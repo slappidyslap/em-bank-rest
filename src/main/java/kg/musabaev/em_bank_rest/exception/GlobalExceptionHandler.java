@@ -1,7 +1,9 @@
 package kg.musabaev.em_bank_rest.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import kg.musabaev.em_bank_rest.util.Pair;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,14 @@ public class GlobalExceptionHandler {
         return response(ex.getMessage(), BAD_REQUEST);
     }
 
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<Pair<String>> handleInvalidEnumFormat(InvalidFormatException ex) {
+        if (ex.getTargetType().isEnum())
+            return response("Invalid enum value: " + ex.getTargetType().getName(), BAD_REQUEST);
+        else
+            return response(ex.getMessage(), BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Pair<List<String>>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> messages = ex
@@ -37,7 +47,6 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
                 .toList();
         return response(messages, BAD_REQUEST);
-
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
