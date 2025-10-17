@@ -1,6 +1,12 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class UserAlreadyExistsException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class UserAlreadyExistsException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.CONFLICT;
+    }
     public UserAlreadyExistsException() {
         super("User already exists");
     }

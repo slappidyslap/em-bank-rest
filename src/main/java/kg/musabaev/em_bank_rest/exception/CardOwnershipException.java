@@ -1,6 +1,12 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class CardOwnershipException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class CardOwnershipException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
     public CardOwnershipException() {
         super("Both cards must belong to one user");
     }

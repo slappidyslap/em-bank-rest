@@ -1,6 +1,13 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class CardAlreadyBlockedException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class CardAlreadyBlockedException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.CONFLICT;
+    }
+
     public CardAlreadyBlockedException() {
         super("couldn't block already blocked card");
     }

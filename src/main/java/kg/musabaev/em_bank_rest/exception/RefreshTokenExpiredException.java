@@ -1,6 +1,12 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class RefreshTokenExpiredException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class RefreshTokenExpiredException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
     public RefreshTokenExpiredException() {
         super("Given refresh token expired");
     }

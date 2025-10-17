@@ -1,37 +1,25 @@
 package kg.musabaev.em_bank_rest.exception;
 
 import kg.musabaev.em_bank_rest.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({CardNotFoundException.class, UserNotFoundException.class, RefreshTokenNotFoundException.class})
-    ResponseEntity<Pair<String>> handleResourceNotFound(Exception ex) {
-        return response(ex.getMessage(), NOT_FOUND);
-    }
-
-    @ExceptionHandler({
-            FieldNotValidException.class,
-            CardAlreadyBlockedException.class,
-            CardOwnershipException.class,
-            InactiveCardException.class,
-            InsufficientFundsException.class,
-            SelfTransferNotAllowedException.class
-    })
-    @ResponseStatus(BAD_REQUEST)
-    ResponseEntity<Pair<String>> handleFieldNotValid(FieldNotValidException ex) {
-        return response(ex.getMessage(), BAD_REQUEST);
+    @ExceptionHandler(AbstractHttpStatusException.class)
+    ResponseEntity<Pair<String>> handleFieldNotValid(AbstractHttpStatusException ex) {
+        return response(ex.getMessage(), ex.httpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -56,6 +44,7 @@ public class GlobalExceptionHandler {
                         var fieldName = m.getCodes()[1].split("\\.")[1];
                         return fieldName + " " + m.getDefaultMessage();
                     } catch (Exception e) {
+                        log.error(e.getMessage());
                         return "some field " + m.getDefaultMessage();
                     }
                 })
@@ -63,26 +52,11 @@ public class GlobalExceptionHandler {
         return response(messages, BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(CONFLICT)
-    public void handleUserAlreadyExists() {
-    }
-
-    @ExceptionHandler(RefreshTokenExpiredException.class)
-    @ResponseStatus(UNAUTHORIZED)
-    public void handleRefreshTokenExpired() {
-    }
-
-    @ExceptionHandler(CardOwnerAuthUserMismatchException.class)
-    @ResponseStatus(UNAUTHORIZED)
-    public void handleCardOwnerAuthUserMismatch() {
-    }
-
     private ResponseEntity<Pair<List<String>>> response(List<String> msg, HttpStatus status) {
         return ResponseEntity.status(status.value()).body(Pair.of("errors", msg));
     }
 
     private ResponseEntity<Pair<String>> response(String msg, HttpStatus status) {
-        return ResponseEntity.status(status.value()).body(Pair.of("errors", msg));
+        return ResponseEntity.status(status.value()).body(Pair.of("error", msg));
     }
 }

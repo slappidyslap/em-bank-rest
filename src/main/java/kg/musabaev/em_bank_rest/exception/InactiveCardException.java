@@ -1,6 +1,12 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class InactiveCardException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InactiveCardException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
     public InactiveCardException() {
         super("Source card must be active");
     }

@@ -36,7 +36,7 @@ public class SomePaymentSystemProvider {
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             return Base64.getEncoder().encodeToString(cipher.doFinal(cardNumber.getBytes()));
         } catch (Exception e) {
-            throw new RuntimeException("Error while encrypting: ", e);
+            throw new RuntimeException("Error while encrypting: ", e); // todo
         }
     }
 
@@ -47,7 +47,7 @@ public class SomePaymentSystemProvider {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedCardNumber)));
         } catch (Exception e) {
-            throw new RuntimeException("Error while decrypting: ", e);
+            throw new RuntimeException("Error while decrypting: ", e); // todo
         }
     }
 

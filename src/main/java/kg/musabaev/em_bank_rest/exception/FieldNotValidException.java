@@ -1,6 +1,12 @@
 package kg.musabaev.em_bank_rest.exception;
 
-public class FieldNotValidException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class FieldNotValidException extends AbstractHttpStatusException {
+    @Override
+    public HttpStatus httpStatus() {
+        return HttpStatus.BAD_REQUEST;
+    }
     public FieldNotValidException(String message) {
         super(message);
     }
