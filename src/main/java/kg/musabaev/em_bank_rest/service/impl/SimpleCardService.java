@@ -79,18 +79,29 @@ public class SimpleCardService implements CardService {
     public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto, Authentication auth) {
         var card = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
-        var request = cardBlockRequestRepository.findByCardToBlock(card)
-                .orElseThrow(() -> new CardBlockRequestNotFoundException(id));
-        var actualProcessingStatus = request.getProcessingStatus();
-        var admin = getUserByAuthentication(auth);
+        return switch (dto.status()) {
+            case BLOCKED -> {
+                var request = cardBlockRequestRepository.findByCardToBlock(card)
+                        .orElseThrow(() -> new CardBlockRequestNotFoundException(id));
+                var actualProcessingStatus = request.getProcessingStatus();
+                var admin = getUserByAuthentication(auth);
 
-        if (actualProcessingStatus.equals(CardBlockRequest.Status.DONE))
-            throw new CardAlreadyBlockedException();
+                if (actualProcessingStatus.equals(CardBlockRequest.Status.DONE))
+                    throw new CardUnsupportedOperationException("Given card already blocked");
 
-        card.setStatus(dto.status());
-        request.setProcessingStatus(CardBlockRequest.Status.DONE);
-        request.setProcesserUser(admin);
-        return cardMapper.toPatchCardResponse(cardRepository.save(card));
+                card.setStatus(CardStatus.BLOCKED);
+                request.setProcessingStatus(CardBlockRequest.Status.DONE);
+                request.setProcesserUser(admin);
+                yield cardMapper.toPatchCardResponse(cardRepository.save(card));
+            }
+            case ACTIVE -> {
+                if (card.getStatus().equals(CardStatus.ACTIVE))
+                    throw new CardUnsupportedOperationException("Given card already active");
+                card.setStatus(CardStatus.ACTIVE);
+                yield cardMapper.toPatchCardResponse(cardRepository.save(card));
+            }
+            case EXPIRED -> throw new CardExpiredException();
+        };
     }
 
     @Override
@@ -112,7 +123,7 @@ public class SimpleCardService implements CardService {
         var authUser = getUserByAuthentication(auth);
         var card = cardRepository.findById(cardId).get();
         if (card.getStatus() == CardStatus.BLOCKED)
-            throw new CardAlreadyBlockedException();
+            throw new CardUnsupportedOperationException("Given card already blocked");
 
         cardBlockRequestRepository.save(CardBlockRequest.builder()
                 .cardToBlock(card)
