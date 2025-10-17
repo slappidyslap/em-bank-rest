@@ -11,6 +11,5 @@ https://github.com/jwtk/jjwt?tab=readme-ov-file#quickstart
 
 проверить validation (emailornull) добавить новые - usercontroller
 
-изменение статуса карты токо если он есть "подсистеме" 
-
-
+добавить другие эндпоинты
+- актив карта

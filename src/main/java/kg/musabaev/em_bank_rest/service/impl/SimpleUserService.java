@@ -47,14 +47,14 @@ public class SimpleUserService implements UserService {
     @Override
     @Transactional(readOnly = true)
     public GetCreatePatchUserResponse getById(Authentication auth) {
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         return userMapper.toGetUserResponse(authUser);
     }
 
     @Override
     @Transactional
     public GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication auth) {
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         userMapper.patch(dto, authUser);
         var persistedUser = userRepository.save(authUser);
         return userMapper.toPatchUserResponse(persistedUser);
@@ -75,7 +75,7 @@ public class SimpleUserService implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(id)));
     }
 
-    private User getCurrentAuthenticatedUser(Authentication auth) {
+    private User getUserByAuthentication(Authentication auth) {
         var userDetails = (SimpleUserDetails) auth.getPrincipal();
         return userDetails.getUser();
     }

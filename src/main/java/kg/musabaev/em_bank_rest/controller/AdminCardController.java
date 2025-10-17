@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +26,7 @@ public class AdminCardController {
     @PostMapping
     public ResponseEntity<GetCreatePatchCardResponse> createCard(
             @Valid @RequestBody CreateCardRequest dto) {
-        return ResponseEntity.accepted().body(cardService.create(dto.userId()));
+        return ResponseEntity.accepted().body(cardService.create(dto));
     }
 
     @GetMapping
@@ -48,7 +50,10 @@ public class AdminCardController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<GetCreatePatchCardResponse> updateCardStatus(@PathVariable Long id, @RequestBody UpdateStatusCardRequest dto) { //todo valid
-        return ResponseEntity.ok(cardService.patchStatus(id, dto));
+    public ResponseEntity<GetCreatePatchCardResponse> updateCardStatus(
+            @PathVariable Long id,
+            @RequestBody UpdateStatusCardRequest dto,
+            @AuthenticationPrincipal Authentication auth) { //todo valid
+        return ResponseEntity.ok(cardService.patchStatus(id, dto, auth));
     }
 }

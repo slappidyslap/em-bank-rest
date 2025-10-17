@@ -1,5 +1,7 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
+import jakarta.validation.Valid;
+import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
@@ -39,7 +41,8 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional
-    public GetCreatePatchCardResponse create(Long userId) {
+    public GetCreatePatchCardResponse create(@Valid CreateCardRequest dto) {
+        var userId = dto.userId();
         var assignedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -71,14 +74,22 @@ public class SimpleCardService implements CardService {
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
 
-    // fixme надо удостовериться что заявка
-    //  на блокировку карты была (другая таблица - другая "подсистема)
     @Override
     @Transactional
-    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto) {
-        Card card = cardRepository.findById(id)
+    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto, Authentication auth) {
+        var card = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
+        var request = cardBlockRequestRepository.findByCardToBlock(card)
+                .orElseThrow(() -> new CardBlockRequestNotFoundException(id));
+        var actualProcessingStatus = request.getProcessingStatus();
+        var admin = getUserByAuthentication(auth);
+
+        if (actualProcessingStatus.equals(CardBlockRequest.Status.DONE))
+            throw new CardAlreadyBlockedException();
+
         card.setStatus(dto.status());
+        request.setProcessingStatus(CardBlockRequest.Status.DONE);
+        request.setProcesserUser(admin);
         return cardMapper.toPatchCardResponse(cardRepository.save(card));
     }
 
@@ -88,7 +99,7 @@ public class SimpleCardService implements CardService {
             CardSpecification filters,
             Pageable pageable,
             Authentication auth) {
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         var cards = cardRepository.findAllByUser(authUser, filters.build(), pageable);
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
@@ -98,7 +109,7 @@ public class SimpleCardService implements CardService {
     public void requestBlockCard(Long cardId, Authentication auth) {
         requireCardBelongUser(cardId, auth);
 
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         var card = cardRepository.findById(cardId).get();
         if (card.getStatus() == CardStatus.BLOCKED)
             throw new CardAlreadyBlockedException();
@@ -122,7 +133,7 @@ public class SimpleCardService implements CardService {
         if (dto.fromCardNumber().equals(dto.toCardNumber()))
             throw new SelfTransferNotAllowedException();
 
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
                 .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
         var toCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.toCardNumber()))
@@ -158,14 +169,14 @@ public class SimpleCardService implements CardService {
     }
 
     private void requireCardBelongUser(Long cardId, Authentication auth) {
-        var authUser = getCurrentAuthenticatedUser(auth);
+        var authUser = getUserByAuthentication(auth);
         var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         if (!card.getUser().equals(authUser))
             throw new CardOwnerAuthUserMismatchException();
     }
 
-    private User getCurrentAuthenticatedUser(Authentication auth) {
+    private User getUserByAuthentication(Authentication auth) {
         var userDetails = (SimpleUserDetails) auth.getPrincipal();
         return userDetails.getUser();
     }

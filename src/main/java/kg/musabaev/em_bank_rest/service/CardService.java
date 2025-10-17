@@ -1,5 +1,6 @@
 package kg.musabaev.em_bank_rest.service;
 
+import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
@@ -13,13 +14,13 @@ import java.math.BigDecimal;
 
 public interface CardService {
 
-    GetCreatePatchCardResponse create(Long userId);
+    GetCreatePatchCardResponse create(CreateCardRequest userId);
 
     GetCreatePatchCardResponse getById(Long id);
 
     PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
 
-    GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus);
+    GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus, Authentication auth);
 
     PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filter, Pageable pageable, Authentication auth);
 
