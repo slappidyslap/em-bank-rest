@@ -8,4 +8,8 @@ public abstract class AbstractHttpStatusException extends RuntimeException {
     public AbstractHttpStatusException(String message) {
         super(message);
     }
+
+    public AbstractHttpStatusException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
