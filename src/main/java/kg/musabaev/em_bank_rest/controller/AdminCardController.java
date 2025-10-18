@@ -54,7 +54,7 @@ public class AdminCardController {
     public GetCreatePatchCardResponse updateCardStatus(
             @Positive @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
-            @AuthenticationPrincipal Authentication auth) { //todo valid
+            @AuthenticationPrincipal Authentication auth) {
         return cardService.patchStatus(cardId, dto, auth);
     }
 }
