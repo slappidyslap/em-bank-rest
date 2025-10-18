@@ -14,10 +14,12 @@ public record CardSpecification(
 ) {
 
     public Specification<Card> build() {
-        try {
-            CardStatus.valueOf(status.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            throw new JsonToEnumConversionFailedException(status, CardStatus.class);
+        if (status != null) {
+            try {
+                CardStatus.valueOf(status.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                throw new JsonToEnumConversionFailedException(status, CardStatus.class);
+            }
         }
         return withStatus().and(withUserId());
     }

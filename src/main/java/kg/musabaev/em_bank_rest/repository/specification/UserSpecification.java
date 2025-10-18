@@ -15,10 +15,12 @@ public record UserSpecification(
         String role) {
 
     public Specification<User> build() {
-        try {
-            Role.valueOf(role.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            throw new JsonToEnumConversionFailedException(role, Role.class);
+        if (role != null) {
+            try {
+                Role.valueOf(role.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                throw new JsonToEnumConversionFailedException(role, Role.class);
+            }
         }
         return withEmail()
                 .and(withFullName())
