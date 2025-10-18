@@ -7,7 +7,7 @@ public class RefreshTokenNotFoundException extends AbstractHttpStatusException {
     public HttpStatus httpStatus() {
         return HttpStatus.NOT_FOUND;
     }
-    public RefreshTokenNotFoundException(String token) {
-        super("Refresh token by " + token + " token not found");
+    public RefreshTokenNotFoundException() {
+        super("Refresh token not found by given token");
     }
 }

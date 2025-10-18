@@ -70,14 +70,14 @@ public class SimpleAuthService implements AuthService {
         String token = dto.refreshToken();
         RefreshToken refreshToken = refreshTokenRepository
                 .findByToken(token)
-                .orElseThrow(() -> new RefreshTokenNotFoundException(token));
-        refreshTokenRepository.deleteById(refreshToken.getId());
+                .orElseThrow(RefreshTokenNotFoundException::new);
 
         if (Instant.now().isAfter(refreshToken.getExpiration()))
             throw new RefreshTokenExpiredException();
 
         String email = refreshTokenRepository.findRefreshTokenOwnerEmailByToken(token)
                 .orElseThrow(() -> new UserNotFoundException(token, "refresh token"));
+        refreshTokenRepository.deleteById(refreshToken.getId());
         return new AuthenticateRefreshUserResponse(
                 jwtUtil.generateAccessToken(email),
                 jwtUtil.generateRefreshToken(email)
