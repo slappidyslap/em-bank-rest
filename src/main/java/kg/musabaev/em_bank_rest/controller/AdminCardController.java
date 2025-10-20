@@ -6,12 +6,12 @@ import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +54,7 @@ public class AdminCardController {
     public GetCreatePatchCardResponse updateCardStatus(
             @Positive @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
-            @AuthenticationPrincipal Authentication auth) {
-        return cardService.patchStatus(cardId, dto, auth);
+            @AuthenticationPrincipal SimpleUserDetails userDetails) {
+        return cardService.patchStatus(cardId, dto, userDetails);
     }
 }

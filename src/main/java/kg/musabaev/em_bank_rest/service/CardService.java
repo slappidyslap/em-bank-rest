@@ -5,10 +5,10 @@ import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.util.Pair;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
-import org.springframework.security.core.Authentication;
 
 import java.math.BigDecimal;
 
@@ -20,17 +20,17 @@ public interface CardService {
 
     PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
 
-    GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus, Authentication auth);
+    GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus, SimpleUserDetails userDetails);
 
-    PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filter, Pageable pageable, Authentication auth);
+    PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filter, Pageable pageable, SimpleUserDetails userDetails);
 
     void delete(Long id);
 
-    void transferMoney(Authentication auth, TransferBetweenCardsRequest dto);
+    void transferMoney(SimpleUserDetails userDetails, TransferBetweenCardsRequest dto);
 
-    GetCreatePatchCardResponse getById(Long cardId, Authentication auth);
+    GetCreatePatchCardResponse getById(Long cardId, SimpleUserDetails userDetails);
 
-    Pair<BigDecimal> getBalance(Long cardId, Authentication auth);
+    Pair<BigDecimal> getBalance(Long cardId, SimpleUserDetails userDetails);
 
-    void requestBlockCard(Long cardId, Authentication auth);
+    void requestBlockCard(Long cardId, SimpleUserDetails userDetails);
 }

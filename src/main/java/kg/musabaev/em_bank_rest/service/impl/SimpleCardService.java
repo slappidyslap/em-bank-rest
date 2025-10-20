@@ -8,7 +8,6 @@ import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
-import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.*;
 import kg.musabaev.em_bank_rest.mapper.CardMapper;
 import kg.musabaev.em_bank_rest.repository.CardBlockRequestRepository;
@@ -22,7 +21,6 @@ import kg.musabaev.em_bank_rest.util.SomePaymentSystemProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,7 +74,7 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional
-    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto, Authentication auth) {
+    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto, SimpleUserDetails userDetails) {
         var card = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
         return switch (dto.status()) {
@@ -84,7 +82,7 @@ public class SimpleCardService implements CardService {
                 var request = cardBlockRequestRepository.findByCardToBlock(card)
                         .orElseThrow(() -> new CardBlockRequestNotFoundException(id));
                 var actualProcessingStatus = request.getProcessingStatus();
-                var admin = getUserByAuthentication(auth);
+                var admin = userDetails.getUser();
 
                 if (actualProcessingStatus.equals(CardBlockRequest.Status.DONE))
                     throw new CardUnsupportedOperationException("Given card already blocked");
@@ -109,18 +107,18 @@ public class SimpleCardService implements CardService {
     public PagedModel<GetCreatePatchCardResponse> getAll(
             CardSpecification filters,
             Pageable pageable,
-            Authentication auth) {
-        var authUser = getUserByAuthentication(auth);
+            SimpleUserDetails userDetails) {
+        var authUser = userDetails.getUser();
         var cards = cardRepository.findAllByUser(authUser, filters.build(), pageable);
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
 
     @Override
     @Transactional
-    public void requestBlockCard(Long cardId, Authentication auth) {
-        requireCardBelongUser(cardId, auth);
+    public void requestBlockCard(Long cardId, SimpleUserDetails userDetails) {
+        requireCardBelongUser(cardId, userDetails);
 
-        var authUser = getUserByAuthentication(auth);
+        var authUser = userDetails.getUser();
         var card = cardRepository.findById(cardId).get();
         if (card.getStatus() == CardStatus.BLOCKED)
             throw new CardUnsupportedOperationException("Given card already blocked");
@@ -140,11 +138,11 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional
-    public void transferMoney(Authentication auth, TransferBetweenCardsRequest dto) {
+    public void transferMoney(SimpleUserDetails userDetails, TransferBetweenCardsRequest dto) {
         if (dto.fromCardNumber().equals(dto.toCardNumber()))
             throw new SelfTransferNotAllowedException();
 
-        var authUser = getUserByAuthentication(auth);
+        var authUser = userDetails.getUser();
         var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
                 .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
         var toCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.toCardNumber()))
@@ -167,28 +165,23 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetCreatePatchCardResponse getById(Long cardId, Authentication auth) {
-        requireCardBelongUser(cardId, auth);
+    public GetCreatePatchCardResponse getById(Long cardId, SimpleUserDetails userDetails) {
+        requireCardBelongUser(cardId, userDetails);
         return cardMapper.toGetCardResponse(cardRepository.findById(cardId).get());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Pair<BigDecimal> getBalance(Long cardId, Authentication auth) {
-        requireCardBelongUser(cardId, auth);
+    public Pair<BigDecimal> getBalance(Long cardId, SimpleUserDetails userDetails) {
+        requireCardBelongUser(cardId, userDetails);
         return Pair.of("balance", cardRepository.findById(cardId).get().getBalance());
     }
 
-    private void requireCardBelongUser(Long cardId, Authentication auth) {
-        var authUser = getUserByAuthentication(auth);
+    private void requireCardBelongUser(Long cardId, SimpleUserDetails userDetails) {
+        var authUser = userDetails.getUser();
         var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         if (!card.getUser().equals(authUser))
-            throw new CardOwnerAuthUserMismatchException();
-    }
-
-    private User getUserByAuthentication(Authentication auth) {
-        var userDetails = (SimpleUserDetails) auth.getPrincipal();
-        return userDetails.getUser();
+            throw new CardOwnershipException();
     }
 }

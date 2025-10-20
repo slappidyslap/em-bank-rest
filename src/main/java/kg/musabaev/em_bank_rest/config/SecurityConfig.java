@@ -34,9 +34,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui*/**").permitAll()
                         .requestMatchers("/scalar/**").permitAll()
                         .requestMatchers("/api/*/auth/**").permitAll()
-                        .requestMatchers("/api/*/users/me/**").hasRole("USER")
+                        .requestMatchers("/api/*/users/**").hasRole("USER")
                         .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/*/users/me/**").hasRole("USER")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) //todo
                 .exceptionHandling(exceptionHandling -> exceptionHandling
