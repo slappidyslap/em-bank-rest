@@ -1,4 +1,6 @@
 get:
+  security:
+    - bearerAuth: []
   tags:
     - admin-card-controller
   operationId: getAllCards
@@ -57,6 +59,8 @@ get:
           schema:
             $ref: "../components/schemas/card.yaml#/PagedModelGetCreatePatchCardResponse"
 post:
+  security:
+    - bearerAuth: []
   tags:
     - admin-card-controller
   operationId: createCard

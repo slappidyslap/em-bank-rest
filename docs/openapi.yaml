@@ -8,6 +8,13 @@ servers:
     description: Generated server url
 
 paths:
+  /api/v1/auth/signup:
+    $ref: './paths/auth-signup.yaml'
+  /api/v1/auth/login:
+    $ref: './paths/auth-login.yaml'
+  /api/v1/auth/refresh:
+    $ref: './paths/auth-refresh.yaml'
+
   /api/v1/admin/users:
     $ref: './paths/admin-users.yaml'
   /api/v1/admin/users/{userId}:
@@ -31,13 +38,6 @@ paths:
 
   /api/v1/users/me:
     $ref: './paths/user-me.yaml'
-
-  /api/v1/auth/signup:
-    $ref: './paths/auth-signup.yaml'
-  /api/v1/auth/login:
-    $ref: './paths/auth-login.yaml'
-  /api/v1/auth/refresh:
-    $ref: './paths/auth-refresh.yaml'
 components:
   schemas:
     GetCreatePatchUserResponse:
@@ -60,3 +60,9 @@ components:
       $ref: './components/schemas/card.yaml#/UpdateStatusCardRequest'
     PagedModelGetCreatePatchCardResponse:
       $ref: './components/schemas/card.yaml#/PagedModelGetCreatePatchCardResponse'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

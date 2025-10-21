@@ -1,5 +1,6 @@
 package kg.musabaev.em_bank_rest.config;
 
+import kg.musabaev.em_bank_rest.security.ForbiddenAccessDeniedHandler;
 import kg.musabaev.em_bank_rest.security.JwtAuthFilter;
 import kg.musabaev.em_bank_rest.security.UnauthorizedAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UnauthorizedAuthenticationEntryPoint unauthorizedAuthenticationEntryPoint;
+    private final ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,7 +41,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable) //todo
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .authenticationEntryPoint(unauthorizedAuthenticationEntryPoint))
+                        .authenticationEntryPoint(unauthorizedAuthenticationEntryPoint)
+                        .accessDeniedHandler(forbiddenAccessDeniedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

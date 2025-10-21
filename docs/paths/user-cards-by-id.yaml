@@ -1,4 +1,7 @@
 get:
+  security:
+    - bearerAuth:
+        - USER
   tags:
     - user-card-controller
   operationId: getById

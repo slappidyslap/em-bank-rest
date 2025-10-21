@@ -1,4 +1,6 @@
 get:
+  security:
+    - bearerAuth: []
   tags:
     - admin-user-controller
   operationId: getAllUser

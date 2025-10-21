@@ -1,4 +1,6 @@
 get:
+  security:
+    - bearerAuth: []
   tags:
     - admin-card-controller
   operationId: getCardById
@@ -30,6 +32,8 @@ get:
           schema:
             $ref: "../components/schemas/card.yaml#/GetCreatePatchCardResponse"
 delete:
+  security:
+    - bearerAuth: []
   tags:
     - admin-card-controller
   operationId: deleteCard
@@ -61,6 +65,8 @@ delete:
           schema:
             type: object
 patch:
+  security:
+    - bearerAuth: []
   tags:
     - admin-card-controller
   operationId: updateCardStatus

@@ -1,4 +1,7 @@
 get:
+  security:
+    - bearerAuth:
+        - USER
   tags:
     - user-controller
   operationId: getUserById
@@ -12,6 +15,9 @@ get:
           schema:
             $ref: "../components/schemas/user.yaml#/GetCreatePatchUserResponse"
 patch:
+  security:
+    - bearerAuth:
+        - USER
   tags:
     - user-controller
   operationId: updateUser

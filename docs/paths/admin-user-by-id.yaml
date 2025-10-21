@@ -1,4 +1,6 @@
 get:
+  security:
+    - bearerAuth: []
   tags:
     - admin-user-controller
   operationId: getUserById_1
@@ -26,6 +28,8 @@ get:
           schema:
             $ref: "../components/schemas/user.yaml#/GetCreatePatchUserResponse"
 delete:
+  security:
+    - bearerAuth: []
   tags:
     - admin-user-controller
   operationId: deleteUser
@@ -49,6 +53,8 @@ delete:
     "200":
       description: OK
 patch:
+  security:
+    - bearerAuth: []
   tags:
     - admin-user-controller
   operationId: updateUser_1
