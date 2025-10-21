@@ -114,13 +114,13 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+							<outputDirectory>${project.build.outputDirectory}/static/openapi</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${project.basedir}/docs</directory>
 									<filtering>false</filtering>
 									<includes>
-										<include>openapi.yaml</include>
+										<include>**/*</include>
 									</includes>
 								</resource>
 							</resources>
