@@ -1,0 +1,21 @@
+post:
+  tags:
+    - auth-controller
+  operationId: signup
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/auth.yaml#/SignupUserRequest"
+    required: true
+  responses:
+    "400":
+      description: Invalid fields
+    "409":
+      description: Email already exists
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/user.yaml#/GetCreatePatchUserResponse"

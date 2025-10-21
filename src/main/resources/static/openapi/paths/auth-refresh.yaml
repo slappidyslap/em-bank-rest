@@ -1,0 +1,21 @@
+post:
+  tags:
+    - auth-controller
+  operationId: refresh
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/auth.yaml#/UpdateTokensRequest"
+    required: true
+  responses:
+    "400":
+      description: Invalid fields
+    "404":
+      description: Refresh token not found
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/auth.yaml#/AuthenticateRefreshUserResponse"

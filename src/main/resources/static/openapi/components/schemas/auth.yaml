@@ -1,0 +1,42 @@
+SignupUserRequest:
+  type: object
+  properties:
+    fullName:
+      type: string
+      minLength: 1
+    email:
+      type: string
+      format: email
+      minLength: 1
+    password:
+      type: string
+      minLength: 1
+  required:
+    - email
+    - fullName
+    - password
+UpdateTokensRequest:
+  type: object
+  properties:
+    refreshToken:
+      type: string
+AuthenticateRefreshUserResponse:
+  type: object
+  properties:
+    accessToken:
+      type: string
+    refreshToken:
+      type: string
+AuthenticateRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+      minLength: 1
+    password:
+      type: string
+      minLength: 1
+  required:
+    - email
+    - password

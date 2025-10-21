@@ -1,0 +1,21 @@
+post:
+  tags:
+    - auth-controller
+  operationId: login
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/auth.yaml#/AuthenticateRequest"
+    required: true
+  responses:
+    "400":
+      description: Invalid fields
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/auth.yaml#/AuthenticateRefreshUserResponse"

@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record AuthenticateRequest(
-        @NotNull(message = "{app.msg.not_null}")
-        @Email(message = "{app.msg.email}")
-        @NotBlank(message = "{app.msg.not_blank}")
+        @NotNull 
+        @Email 
+        @NotBlank 
         String email,
-        @NotNull(message = "{app.msg.not_null}")
-        @NotBlank(message = "{app.msg.not_blank}")
+        @NotNull 
+        @NotBlank 
         String password
 ) {
 }

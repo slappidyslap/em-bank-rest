@@ -5,4 +5,4 @@ spring:
     active: @spring.profiles.active@
 springdoc:
   swagger-ui:
-    url: /openapi/openapi2.yaml
+    url: /openapi/openapi.yaml
