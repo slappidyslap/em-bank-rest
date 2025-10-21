@@ -1,0 +1,36 @@
+get:
+  tags:
+    - user-controller
+  operationId: getUserById
+  responses:
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/user.yaml#/GetCreatePatchUserResponse"
+patch:
+  tags:
+    - user-controller
+  operationId: updateUser
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/user.yaml#/PatchUserRequest"
+    required: true
+  responses:
+    "400":
+      description: Invalid fields
+    "409":
+      description: Email already exists
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/user.yaml#/GetCreatePatchUserResponse"

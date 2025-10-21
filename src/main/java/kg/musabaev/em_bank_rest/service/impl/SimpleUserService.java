@@ -13,7 +13,6 @@ import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,6 @@ public class SimpleUserService implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -57,18 +55,16 @@ public class SimpleUserService implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetCreatePatchUserResponse getById(Authentication auth) {
-        var authUser = getUserByAuthentication(auth);
+    public GetCreatePatchUserResponse getById(SimpleUserDetails userDetails) {
+        var authUser = userDetails.getUser();
         return userMapper.toGetUserResponse(authUser);
     }
 
     @Override
     @Transactional
-    public GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication auth) {
-        var authUser = getUserByAuthentication(auth);
-        userMapper.patch(dto, authUser);
-        var persistedUser = userRepository.save(authUser);
-        return userMapper.toPatchUserResponse(persistedUser);
+    public GetCreatePatchUserResponse patch(PatchUserRequest dto, SimpleUserDetails userDetails) {
+        var authUser = userDetails.getUser();
+        return patchUser(dto, authUser);
     }
 
     @Override
@@ -84,10 +80,5 @@ public class SimpleUserService implements UserService {
     public GetCreatePatchUserResponse getById(Long id) {
         return userMapper.toGetUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
-    }
-
-    private User getUserByAuthentication(Authentication auth) {
-        var userDetails = (SimpleUserDetails) auth.getPrincipal();
-        return userDetails.getUser();
     }
 }

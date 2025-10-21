@@ -28,6 +28,9 @@ paths:
     $ref: './paths/user-cards-transfer.yaml'
   /api/v1/users/me/cards/{cardId}/balance:
     $ref: './paths/user-cards-balance.yaml'
+
+  /api/v1/users/me:
+    $ref: './paths/user-me.yaml'
 components:
   schemas:
     GetCreatePatchUserResponse:

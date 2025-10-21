@@ -3,6 +3,7 @@ package kg.musabaev.em_bank_rest.service;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
 import kg.musabaev.em_bank_rest.repository.specification.UserSpecification;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ public interface UserService {
 
     GetCreatePatchUserResponse patch(Long id, PatchUserRequest dto);
 
-    GetCreatePatchUserResponse getById(Authentication authUser);
+    GetCreatePatchUserResponse getById(SimpleUserDetails userDetails);
 
-    GetCreatePatchUserResponse patch(PatchUserRequest dto, Authentication authUser);
+    GetCreatePatchUserResponse patch(PatchUserRequest dto, SimpleUserDetails userDetails);
 }

@@ -3,6 +3,7 @@ package kg.musabaev.em_bank_rest.controller;
 import jakarta.validation.Valid;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
 import kg.musabaev.em_bank_rest.dto.PatchUserRequest;
+import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<GetCreatePatchUserResponse> getUserById(
-            @AuthenticationPrincipal Authentication auth) {
-        return ResponseEntity.ok(userService.getById(auth));
+    public GetCreatePatchUserResponse getMe(
+            @AuthenticationPrincipal SimpleUserDetails userDetails) {
+        return userService.getById(userDetails);
     }
 
     @PatchMapping
-    public ResponseEntity<GetCreatePatchUserResponse> updateUser(
+    public GetCreatePatchUserResponse updateUser(
             @Valid @RequestBody PatchUserRequest dto,
-            @AuthenticationPrincipal Authentication auth) {
-        return ResponseEntity.ok(userService.patch(dto, auth));
+            @AuthenticationPrincipal SimpleUserDetails userDetails) {
+        return userService.patch(dto, userDetails);
     }
 }
