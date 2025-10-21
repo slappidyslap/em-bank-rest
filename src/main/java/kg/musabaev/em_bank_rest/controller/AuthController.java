@@ -4,10 +4,10 @@ import jakarta.validation.Valid;
 import kg.musabaev.em_bank_rest.dto.*;
 import kg.musabaev.em_bank_rest.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -22,12 +22,23 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthenticateRefreshUserResponse login(@Valid @RequestBody AuthenticateRequest dto) {
-        return authService.login(dto);
+    public ResponseEntity<AuthenticateUserResponse> login(@Valid @RequestBody AuthenticateRequest dto) {
+        return getAuthenticateUserResponse(authService.login(dto));
     }
 
     @PostMapping("/refresh")
-    public AuthenticateRefreshUserResponse refresh(@Valid @RequestBody UpdateTokensRequest dto) {
-        return authService.refresh(dto);
+    public ResponseEntity<AuthenticateUserResponse> refresh(@CookieValue(name = "REFRESH_TOKEN") String refreshToken) {
+        return getAuthenticateUserResponse(authService.refresh(refreshToken));
+    }
+
+    private ResponseEntity<AuthenticateUserResponse> getAuthenticateUserResponse(AccessAndRefreshTokens tokens) {
+        var refreshTokenCookie = ResponseCookie.from("REFRESH_TOKEN", tokens.refreshToken())
+                .httpOnly(true)
+                .path("/api/v1/auth/refresh")
+                .build();
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body(new AuthenticateUserResponse(tokens.accessToken()));
     }
 }

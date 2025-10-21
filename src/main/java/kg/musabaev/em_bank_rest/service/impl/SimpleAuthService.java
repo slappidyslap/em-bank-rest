@@ -54,31 +54,30 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     @Transactional
-    public AuthenticateRefreshUserResponse login(AuthenticateRequest dto) {
+    public AccessAndRefreshTokens login(AuthenticateRequest dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.email(),
                 dto.password()
         ));
-        return new AuthenticateRefreshUserResponse(
+        return new AccessAndRefreshTokens(
                 jwtUtil.generateAccessToken(dto.email()),
                 jwtUtil.generateRefreshToken(dto.email()));
     }
 
     @Override
     @Transactional
-    public AuthenticateRefreshUserResponse refresh(UpdateTokensRequest dto) {
-        String token = dto.refreshToken();
-        RefreshToken refreshToken = refreshTokenRepository
-                .findByToken(token)
+    public AccessAndRefreshTokens refresh(String refreshToken) {
+        RefreshToken refreshTokenEntity = refreshTokenRepository
+                .findByToken(refreshToken)
                 .orElseThrow(RefreshTokenNotFoundException::new);
 
-        if (Instant.now().isAfter(refreshToken.getExpiration()))
+        if (Instant.now().isAfter(refreshTokenEntity.getExpiration()))
             throw new RefreshTokenExpiredException();
 
-        String email = refreshTokenRepository.findRefreshTokenOwnerEmailByToken(token)
-                .orElseThrow(() -> new UserNotFoundException(token, "refresh token"));
-        refreshTokenRepository.deleteById(refreshToken.getId());
-        return new AuthenticateRefreshUserResponse(
+        String email = refreshTokenRepository.findRefreshTokenOwnerEmailByToken(refreshToken)
+                .orElseThrow(() -> new UserNotFoundException(refreshToken, "refresh token"));
+        refreshTokenRepository.deleteById(refreshTokenEntity.getId());
+        return new AccessAndRefreshTokens(
                 jwtUtil.generateAccessToken(email),
                 jwtUtil.generateRefreshToken(email)
         );

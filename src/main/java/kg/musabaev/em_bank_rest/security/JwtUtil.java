@@ -10,6 +10,7 @@ import kg.musabaev.em_bank_rest.repository.RefreshTokenRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +24,13 @@ import java.util.UUID;
 @Slf4j
 public class JwtUtil {
 
-    private final String SECRET = "mominfactilovefrogsfrogsfrogsfrogsfrogsfrogs";
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60; // 1 час
-    private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 дней
+    @Value("${app.jwt-secret}")
+    private String SECRET;
+    @Value("${app.access-token-expiration}")
+    private Long ACCESS_TOKEN_EXPIRATION;
+    @Value("${app.refresh-token-expiration}")
+    private Long REFRESH_TOKEN_EXPIRATION;
+
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
