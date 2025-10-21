@@ -1,0 +1,25 @@
+post:
+  tags:
+    - user-card-controller
+  operationId: transferMoney
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../components/schemas/card.yaml#/TransferBetweenCardsRequest"
+    required: true
+  responses:
+    "400":
+      description: Invalid fields
+    "404":
+      description: Card not found
+    "503":
+      description: Service Unavailable
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            type: object

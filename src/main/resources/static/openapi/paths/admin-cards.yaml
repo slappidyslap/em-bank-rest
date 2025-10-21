@@ -46,8 +46,6 @@ get:
   responses:
     "400":
       description: Invalid query params
-    "503":
-      description: Payment service unavailable
     "401":
       description: Unauthorized
     "403":

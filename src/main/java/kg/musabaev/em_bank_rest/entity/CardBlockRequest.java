@@ -31,8 +31,8 @@ public class CardBlockRequest {
     @Enumerated(EnumType.STRING)
     private Status processingStatus;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "processor_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processor_user_id")
     private User processerUser;
 
     public enum Status {

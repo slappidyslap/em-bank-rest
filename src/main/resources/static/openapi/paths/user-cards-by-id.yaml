@@ -1,0 +1,27 @@
+get:
+  tags:
+    - user-card-controller
+  operationId: getById
+  parameters:
+    - name: cardId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        exclusiveMinimum: 0
+  responses:
+    "400":
+      description: Invalid cardId
+    "404":
+      description: Card not found
+    "401":
+      description: Unauthorized
+    "403":
+      description: Forbidden
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            $ref: "../components/schemas/card.yaml#/GetCreatePatchCardResponse"

@@ -1,10 +1,7 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
 import jakarta.validation.Valid;
-import kg.musabaev.em_bank_rest.dto.CreateCardRequest;
-import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
-import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
-import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
+import kg.musabaev.em_bank_rest.dto.*;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
@@ -104,12 +101,9 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedModel<GetCreatePatchCardResponse> getAll(
-            CardSpecification filters,
-            Pageable pageable,
-            SimpleUserDetails userDetails) {
+    public PagedModel<GetCreatePatchCardResponse> getAll(Pageable pageable, SimpleUserDetails userDetails) {
         var authUser = userDetails.getUser();
-        var cards = cardRepository.findAllByUser(authUser, filters.build(), pageable);
+        var cards = cardRepository.findAllByUser(authUser, pageable);
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
 
@@ -144,14 +138,14 @@ public class SimpleCardService implements CardService {
 
         var authUser = userDetails.getUser();
         var fromCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.fromCardNumber()))
-                .orElseThrow(() -> new CardNotFoundException(dto.fromCardNumber()));
+                .orElseThrow(() -> new CardNotFoundException("fromCardNumber"));
         var toCard = cardRepository.findByNumber(paymentSystemProvider.encryptCardNumber(dto.toCardNumber()))
-                .orElseThrow(() -> new CardNotFoundException(dto.toCardNumber()));
+                .orElseThrow(() -> new CardNotFoundException("toCardNumber"));
 
         if (fromCard.getStatus() != CardStatus.ACTIVE)
             throw new InactiveCardException();
         if (!fromCard.getUser().equals(authUser) || !toCard.getUser().equals(authUser))
-            throw new CardOwnershipException();
+            throw new CardOwnershipException("Both cards must belong to one user");
         if (fromCard.getBalance().compareTo(dto.amount()) < 0) {
             throw new InsufficientFundsException();
         }
@@ -165,9 +159,11 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetCreatePatchCardResponse getById(Long cardId, SimpleUserDetails userDetails) {
+    public GetCardDetailsResponse getById(Long cardId, SimpleUserDetails userDetails) {
         requireCardBelongUser(cardId, userDetails);
-        return cardMapper.toGetCardResponse(cardRepository.findById(cardId).get());
+        Card card = cardRepository.findById(cardId).get();
+        card.setNumber(paymentSystemProvider.decryptCardNumber(card.getNumber()));
+        return cardMapper.toGetCardDetailsResponse(card);
     }
 
     @Override
@@ -182,6 +178,6 @@ public class SimpleCardService implements CardService {
         var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         if (!card.getUser().equals(authUser))
-            throw new CardOwnershipException();
+            throw new CardOwnershipException("Card by " + cardId + " does not belong to authorized user");
     }
 }

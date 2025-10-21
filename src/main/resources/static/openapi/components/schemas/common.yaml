@@ -13,10 +13,8 @@ PageMetadata:
     totalPages:
       type: integer
       format: int64
-PairBigDecimal:
+GetBalance:
   type: object
   properties:
-    key:
-      type: string
-    value:
+    balance:
       type: number

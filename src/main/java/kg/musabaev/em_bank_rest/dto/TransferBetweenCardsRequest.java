@@ -7,16 +7,16 @@ import jakarta.validation.constraints.Pattern;
 import java.math.BigDecimal;
 
 public record TransferBetweenCardsRequest(
-        @NotNull(message = "{app.msg.not_null}")
-        @Pattern(regexp = "[0-9]{16}", message = "{app.msg.pattern.16_digits}")
+        @NotNull
+        @Pattern(regexp = "[0-9]{16}")
         String fromCardNumber,
 
-        @NotNull(message = "{app.msg.not_null}")
-        @Pattern(regexp = "[0-9]{16}", message = "{app.msg.pattern.16_digits}")
+        @NotNull
+        @Pattern(regexp = "[0-9]{16}")
         String toCardNumber,
 
-        @NotNull(message = "{app.msg.not_null}")
-        @DecimalMin(value = "1", message = "{app.msg.min_1}")
+        @NotNull
+        @DecimalMin(value = "1")
         BigDecimal amount
 ) {
 }

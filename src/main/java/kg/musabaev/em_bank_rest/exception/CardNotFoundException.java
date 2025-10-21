@@ -11,7 +11,7 @@ public class CardNotFoundException extends AbstractHttpStatusException {
         super("Card by " + id + " id not found");
     }
 
-    public CardNotFoundException(String cardNumber) {
-        super("Card by " + cardNumber + " number not found");
+    public CardNotFoundException(String sourceOrDest) {
+        super("Given " + sourceOrDest + " not found");
     }
 }

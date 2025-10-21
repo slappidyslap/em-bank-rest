@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop processor user id not null constrains
+      author: eld
+      changes:
+        - dropNotNullConstraint:
+            tableName: card_block_requests
+            columnName: processor_user_id
+            columnDataType: bigint

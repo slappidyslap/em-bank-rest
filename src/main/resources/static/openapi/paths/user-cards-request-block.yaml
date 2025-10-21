@@ -1,0 +1,25 @@
+post:
+  tags:
+    - user-card-controller
+  operationId: requestBlock
+  parameters:
+    - name: cardId
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+        exclusiveMinimum: 0
+  responses:
+    "400":
+      description: Invalid cardId
+    "404":
+      description: Card not found
+    "401":
+      description: Unauthorized
+    "200":
+      description: OK
+      content:
+        'application/json':
+          schema:
+            type: object

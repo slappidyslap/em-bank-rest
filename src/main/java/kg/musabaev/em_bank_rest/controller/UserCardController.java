@@ -3,8 +3,8 @@ package kg.musabaev.em_bank_rest.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
+import kg.musabaev.em_bank_rest.dto.GetCardDetailsResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
-import kg.musabaev.em_bank_rest.repository.specification.CardSpecification;
 import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import kg.musabaev.em_bank_rest.util.Pair;
@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,14 +27,13 @@ public class UserCardController {
 
     @GetMapping
     public PagedModel<GetCreatePatchCardResponse> getMyAllCards(
-            @ModelAttribute CardSpecification filters,
             Pageable pageable,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
-        return cardService.getAll(filters, pageable, userDetails);
+        return cardService.getAll(pageable, userDetails);
     }
 
     @GetMapping("/{cardId}")
-    public GetCreatePatchCardResponse getById(
+    public GetCardDetailsResponse getById(
             @Positive @PathVariable Long cardId,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
         return cardService.getById(cardId, userDetails);

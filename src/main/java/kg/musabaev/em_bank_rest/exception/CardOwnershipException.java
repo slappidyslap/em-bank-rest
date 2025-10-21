@@ -7,7 +7,7 @@ public class CardOwnershipException extends AbstractHttpStatusException {
     public HttpStatus httpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
-    public CardOwnershipException() {
-        super("Both cards must belong to one user");
+    public CardOwnershipException(String message) {
+        super(message);
     }
 }
