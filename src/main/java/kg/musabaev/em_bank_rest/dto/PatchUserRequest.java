@@ -8,7 +8,5 @@ public record PatchUserRequest(
         String fullName,
         @NotBlank
         @Email
-        String email,
-        @NotBlank
-        String password) {
+        String email) {
 }

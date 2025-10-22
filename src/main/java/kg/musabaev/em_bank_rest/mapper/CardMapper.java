@@ -15,7 +15,7 @@ public interface CardMapper {
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")
     GetCreatePatchCardResponse toCreateCardResponse(Card model);
 
-    @Mapping(source = "number", target = "number", qualifiedByName = "unmaskedCardNumber")
+    @Mapping(source = "number", target = "number", qualifiedByName = "unmaskCardNumber")
     GetCardDetailsResponse toGetCardDetailsResponse(Card card);
 
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")

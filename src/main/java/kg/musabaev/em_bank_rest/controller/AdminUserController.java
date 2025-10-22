@@ -28,7 +28,7 @@ public class AdminUserController {
 
     @GetMapping("/{userId}")
     public GetCreatePatchUserResponse getUserById(@Positive @PathVariable Long userId) {
-        return userService.getById(userId);
+        return userService.getByIdForAdmin(userId);
     }
 
     @DeleteMapping("/{userId}")
@@ -41,6 +41,6 @@ public class AdminUserController {
     public GetCreatePatchUserResponse updateUser(
             @Positive @PathVariable Long userId,
             @Valid @RequestBody PatchUserRequest dto) {
-        return userService.patch(userId, dto);
+        return userService.patchForAdmin(userId, dto);
     }
 }

@@ -17,4 +17,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     @Query("SELECT rt.owner.email FROM RefreshToken rt WHERE rt.token = ?1")
     Optional<String> findRefreshTokenOwnerEmailByToken(String token);
+
+    void deleteByOwner_Id(Long ownerId);
 }

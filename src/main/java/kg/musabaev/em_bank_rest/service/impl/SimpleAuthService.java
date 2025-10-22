@@ -82,4 +82,10 @@ public class SimpleAuthService implements AuthService {
                 jwtUtil.generateRefreshToken(email)
         );
     }
+
+    @Override
+    @Transactional
+    public void revokeAllUserRefreshTokens(Long userId) {
+        refreshTokenRepository.deleteByOwner_Id(userId);
+    }
 }

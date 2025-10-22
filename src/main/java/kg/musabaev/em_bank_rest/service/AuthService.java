@@ -9,4 +9,6 @@ public interface AuthService {
     AccessAndRefreshTokens login(AuthenticateRequest dto);
 
     AccessAndRefreshTokens refresh(String refreshToken);
+
+    void revokeAllUserRefreshTokens(Long userId);
 }
