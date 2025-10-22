@@ -37,7 +37,6 @@ public class UserController {
     public void updatePassword(
             @Valid @RequestBody UpdatePasswordRequest dto,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
-
         userService.updatePassword(dto, userDetails);
     }
 }

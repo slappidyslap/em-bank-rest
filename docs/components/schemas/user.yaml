@@ -23,13 +23,9 @@ PatchUserRequest:
     email:
       type: string
       minLength: 1
-    password:
-      type: string
-      minLength: 1
   required:
     - email
     - fullName
-    - password
 
 PagedModelGetCreatePatchUserResponse:
   type: object
@@ -40,3 +36,11 @@ PagedModelGetCreatePatchUserResponse:
         $ref: "#/GetCreatePatchUserResponse"
     page:
       $ref: "./common.yaml#/PageMetadata"
+
+UpdatePasswordRequest:
+  type: object
+  properties:
+    oldPassword:
+      type: string
+    newPassword:
+      type: string

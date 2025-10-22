@@ -38,6 +38,8 @@ paths:
 
   /api/v1/users/me:
     $ref: './paths/user-me.yaml'
+  /api/v1/users/me/password:
+    $ref: './paths/user-password.yaml'
 components:
   schemas:
     GetCreatePatchUserResponse:
@@ -60,7 +62,8 @@ components:
       $ref: './components/schemas/card.yaml#/UpdateStatusCardRequest'
     PagedModelGetCreatePatchCardResponse:
       $ref: './components/schemas/card.yaml#/PagedModelGetCreatePatchCardResponse'
-
+    UpdatePasswordRequest:
+      $ref: './components/schemas/user.yaml#/UpdatePasswordRequest'
   securitySchemes:
     bearerAuth:
       type: http

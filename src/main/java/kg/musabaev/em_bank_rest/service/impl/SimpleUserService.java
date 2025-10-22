@@ -52,6 +52,7 @@ public class SimpleUserService implements UserService {
     private GetCreatePatchUserResponse patchUser(PatchUserRequest dto, User user) {
         userMapper.patch(dto, user);
         var persistedUser = userRepository.saveAndFlush(user);
+        authService.revokeAllUserRefreshTokens(user.getId());
         return userMapper.toPatchUserResponse(persistedUser);
     }
 
