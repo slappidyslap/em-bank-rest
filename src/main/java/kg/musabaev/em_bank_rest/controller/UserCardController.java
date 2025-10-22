@@ -36,7 +36,7 @@ public class UserCardController {
     public GetCardDetailsResponse getById(
             @Positive @PathVariable Long cardId,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
-        return cardService.getById(cardId, userDetails);
+        return cardService.getByIdForUser(cardId, userDetails);
     }
 
     @GetMapping("/{cardId}/balance")

@@ -12,13 +12,10 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", uses = CardMapperUtil.class)
 public interface CardMapper {
 
-    Card toEntity(CreateCardRequest dto);
-
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")
     GetCreatePatchCardResponse toCreateCardResponse(Card model);
 
-    Card toEntity(GetCreatePatchCardResponse getSingleCardResponse);
-    
+    @Mapping(source = "number", target = "number", qualifiedByName = "unmaskedCardNumber")
     GetCardDetailsResponse toGetCardDetailsResponse(Card card);
 
     @Mapping(source = "number", target = "numberMasked", qualifiedByName = "maskCardNumber")

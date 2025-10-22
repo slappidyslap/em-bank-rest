@@ -13,7 +13,7 @@ public interface CardService {
 
     GetCreatePatchCardResponse create(CreateCardRequest userId);
 
-    GetCreatePatchCardResponse getById(Long id);
+    GetCreatePatchCardResponse getByIdForAdmin(Long id);
 
     PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
 
@@ -23,7 +23,7 @@ public interface CardService {
 
     void transferMoney(SimpleUserDetails userDetails, TransferBetweenCardsRequest dto);
 
-    GetCardDetailsResponse getById(Long cardId, SimpleUserDetails userDetails);
+    GetCardDetailsResponse getByIdForUser(Long cardId, SimpleUserDetails userDetails);
 
     Pair<BigDecimal> getBalance(Long cardId, SimpleUserDetails userDetails);
 

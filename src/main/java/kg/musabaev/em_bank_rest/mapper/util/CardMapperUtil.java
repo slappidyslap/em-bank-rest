@@ -16,4 +16,10 @@ public class CardMapperUtil {
     public String maskCardNumber(String encryptedCardNumber) {
         return paymentSystemProvider.maskCardNumber(encryptedCardNumber);
     }
+
+    @Named("unmaskCardNumber")
+    public String unmaskCardNumber(String encryptedCardNumber) {
+        return paymentSystemProvider.decryptCardNumber(encryptedCardNumber);
+
+    }
 }

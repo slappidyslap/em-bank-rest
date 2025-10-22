@@ -40,7 +40,7 @@ public class AdminCardController {
     @GetMapping("/{cardId}")
     public GetCreatePatchCardResponse getCardById(
             @Positive @PathVariable Long cardId) {
-        return cardService.getById(cardId);
+        return cardService.getByIdForAdmin(cardId);
     }
 
     @DeleteMapping("/{cardId}")

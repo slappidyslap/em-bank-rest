@@ -1,6 +1,5 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
-import jakarta.validation.Valid;
 import kg.musabaev.em_bank_rest.dto.*;
 import kg.musabaev.em_bank_rest.entity.Card;
 import kg.musabaev.em_bank_rest.entity.CardBlockRequest;
@@ -36,7 +35,7 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional
-    public GetCreatePatchCardResponse create(@Valid CreateCardRequest dto) {
+    public GetCreatePatchCardResponse create(CreateCardRequest dto) {
         var userId = dto.userId();
         var assignedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -45,7 +44,7 @@ public class SimpleCardService implements CardService {
                 .number(paymentSystemProvider.generateEncryptedRandomCardNumber())
                 .expiry(LocalDate.now().plusYears(3))
                 .status(CardStatus.ACTIVE)
-                .balance(new BigDecimal(0))
+                .balance(BigDecimal.ZERO)
                 .user(assignedUser)
                 .owner(assignedUser.getFullName())
                 .build();
@@ -56,7 +55,7 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public GetCreatePatchCardResponse getById(Long id) {
+    public GetCreatePatchCardResponse getByIdForAdmin(Long id) {
         var foundCard = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
         return cardMapper.toGetCardResponse(foundCard);
@@ -110,10 +109,9 @@ public class SimpleCardService implements CardService {
     @Override
     @Transactional
     public void requestBlockCard(Long cardId, SimpleUserDetails userDetails) {
-        requireCardBelongUser(cardId, userDetails);
-
+        var card = requireCardBelongUser(cardId, userDetails);
         var authUser = userDetails.getUser();
-        var card = cardRepository.findById(cardId).get();
+
         if (card.getStatus() == CardStatus.BLOCKED)
             throw new CardUnsupportedOperationException("Given card already blocked");
 
@@ -127,6 +125,8 @@ public class SimpleCardService implements CardService {
     @Override
     @Transactional
     public void delete(Long id) {
+        if (cardRepository.existsById(id))
+                throw new CardNotFoundException(id);
         cardRepository.deleteById(id);
     }
 
@@ -158,26 +158,25 @@ public class SimpleCardService implements CardService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public GetCardDetailsResponse getById(Long cardId, SimpleUserDetails userDetails) {
-        requireCardBelongUser(cardId, userDetails);
-        Card card = cardRepository.findById(cardId).get();
-        card.setNumber(paymentSystemProvider.decryptCardNumber(card.getNumber()));
+    @Transactional
+    public GetCardDetailsResponse getByIdForUser(Long cardId, SimpleUserDetails userDetails) {
+        var card = requireCardBelongUser(cardId, userDetails);
         return cardMapper.toGetCardDetailsResponse(card);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Pair<BigDecimal> getBalance(Long cardId, SimpleUserDetails userDetails) {
-        requireCardBelongUser(cardId, userDetails);
-        return Pair.of("balance", cardRepository.findById(cardId).get().getBalance());
+        var card = requireCardBelongUser(cardId, userDetails);
+        return Pair.of("balance", card.getBalance());
     }
 
-    private void requireCardBelongUser(Long cardId, SimpleUserDetails userDetails) {
+    private Card requireCardBelongUser(Long cardId, SimpleUserDetails userDetails) {
         var authUser = userDetails.getUser();
         var card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new CardNotFoundException(cardId));
         if (!card.getUser().equals(authUser))
             throw new CardOwnershipException("Card by " + cardId + " does not belong to authorized user");
+        return card;
     }
 }
