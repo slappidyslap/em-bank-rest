@@ -34,7 +34,7 @@ public class AdminCardController {
     public PagedModel<GetCreatePatchCardResponse> getAllCards(
             @ModelAttribute CardSpecification filters,
             Pageable pageable) {
-        return cardService.getAll(filters, pageable);
+        return cardService.getAllForAdmin(filters, pageable);
     }
 
     @GetMapping("/{cardId}")

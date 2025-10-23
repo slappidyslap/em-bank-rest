@@ -6,6 +6,7 @@ import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.GetCardDetailsResponse;
 import kg.musabaev.em_bank_rest.dto.TransferBetweenCardsRequest;
 import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
+import kg.musabaev.em_bank_rest.service.CardService;
 import kg.musabaev.em_bank_rest.service.impl.SimpleCardService;
 import kg.musabaev.em_bank_rest.util.Pair;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,13 @@ import java.math.BigDecimal;
 @Valid
 public class UserCardController {
 
-    private final SimpleCardService cardService;
+    private final CardService cardService;
 
     @GetMapping
     public PagedModel<GetCreatePatchCardResponse> getMyAllCards(
             Pageable pageable,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
-        return cardService.getAll(pageable, userDetails);
+        return cardService.getAllForUser(pageable, userDetails);
     }
 
     @GetMapping("/{cardId}")

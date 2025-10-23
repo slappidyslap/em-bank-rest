@@ -15,7 +15,7 @@ public interface CardService {
 
     GetCreatePatchCardResponse getByIdForAdmin(Long id);
 
-    PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification spec, Pageable pageable);
+    PagedModel<GetCreatePatchCardResponse> getAllForAdmin(CardSpecification spec, Pageable pageable);
 
     GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus, SimpleUserDetails userDetails);
 
@@ -29,5 +29,5 @@ public interface CardService {
 
     void requestBlockCard(Long cardId, SimpleUserDetails userDetails);
 
-    PagedModel<GetCreatePatchCardResponse> getAll(Pageable pageable, SimpleUserDetails userDetails);
+    PagedModel<GetCreatePatchCardResponse> getAllForUser(Pageable pageable, SimpleUserDetails userDetails);
 }

@@ -3,9 +3,11 @@ package kg.musabaev.em_bank_rest.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record TransferBetweenCardsRequest(
         @NotNull
         @Pattern(regexp = "[0-9]{16}")

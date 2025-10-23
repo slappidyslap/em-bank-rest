@@ -63,7 +63,7 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedModel<GetCreatePatchCardResponse> getAll(CardSpecification filters, Pageable pageable) {
+    public PagedModel<GetCreatePatchCardResponse> getAllForAdmin(CardSpecification filters, Pageable pageable) {
         var cards = cardRepository.findAll(filters.build(), pageable);
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));
     }
@@ -100,7 +100,7 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedModel<GetCreatePatchCardResponse> getAll(Pageable pageable, SimpleUserDetails userDetails) {
+    public PagedModel<GetCreatePatchCardResponse> getAllForUser(Pageable pageable, SimpleUserDetails userDetails) {
         var authUser = userDetails.getUser();
         var cards = cardRepository.findAllByUser(authUser, pageable);
         return new PagedModel<>(cards.map(cardMapper::toGetCardResponse));

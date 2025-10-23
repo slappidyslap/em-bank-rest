@@ -114,12 +114,12 @@ class AdminCardControllerTest {
     void getAllCards_ShouldReturn200_WithPagedData() throws Exception {
         var pagedModel = new PagedModel<>(new PageImpl<>(List.of(mockGetCreatePatchCardResponse)));
 
-        when(cardService.getAll(any(), any(Pageable.class))).thenReturn(pagedModel);
+        when(cardService.getAllForAdmin(any(), any(Pageable.class))).thenReturn(pagedModel);
 
         mockMvc.perform(get(BASE_URL + "?page=0&size=10"))
                 .andExpect(status().isOk());
 
-        verify(cardService, times(1)).getAll(any(), any(Pageable.class));
+        verify(cardService, times(1)).getAllForAdmin(any(), any(Pageable.class));
     }
 
     @Test
