@@ -8,7 +8,3 @@ https://habr.com/ru/articles/818489/
 https://stackoverflow.com/questions/27767264/how-to-dockerize-a-maven-project-how-many-ways-to-accomplish-it
 
 https://github.com/jwtk/jjwt?tab=readme-ov-file#quickstart
-
-проверить validation (emailornull) добавить новые - usercontroller
-
-разделить openapi.yaml на несколько частей
