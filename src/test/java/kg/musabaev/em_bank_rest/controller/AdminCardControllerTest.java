@@ -72,14 +72,6 @@ class AdminCardControllerTest {
         userDetails = new SimpleUserDetails(User.builder().id(1L).role(Role.ADMIN).build());
     }
 
-    private static Stream<Arguments> provideExceptionsForPatch() {
-        return Stream.of(
-                Arguments.of(new CardBlockRequestNotFoundException(99L)),
-                Arguments.of(new CardUnsupportedOperationException("")),
-                Arguments.of(new CardExpiredException())
-        );
-    }
-
     @Test
     void createCard_ShouldReturn201_WhenSuccessful() throws Exception {
         var request = new CreateCardRequest(5L);
@@ -186,9 +178,17 @@ class AdminCardControllerTest {
         verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
     }
 
+    private static Stream<Arguments> provideExceptionsForPatch() {
+        return Stream.of(
+                Arguments.of(new CardBlockRequestNotFoundException(99L), 404),
+                Arguments.of(new CardUnsupportedOperationException(""), 409),
+                Arguments.of(new CardExpiredException(), 400)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("provideExceptionsForPatch")
-    void updateCardStatus_ShouldReturn400_WhenThrowException(AbstractHttpStatusException ex) throws Exception {
+    void updateCardStatus_ShouldReturn400_WhenThrowException(AbstractHttpStatusException ex, int statusCode) throws Exception {
         long cardId = 101L;
         var request = new UpdateStatusCardRequest(CardStatus.BLOCKED);
 
@@ -200,7 +200,7 @@ class AdminCardControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .with(user(userDetails))
                         .with(csrf()))
-                .andExpect(status().is(ex.httpStatus().value()));
+                .andExpect(status().is(statusCode));
 
         verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
     }

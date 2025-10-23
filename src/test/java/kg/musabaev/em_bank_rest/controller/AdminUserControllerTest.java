@@ -69,13 +69,6 @@ class AdminUserControllerTest {
                 .fullName("NewName").build();
     }
 
-    private static Stream<Arguments> provideExceptionsForPatch() {
-        return Stream.of(
-                Arguments.of(new UserNotFoundException(99L)),
-                Arguments.of(new UserAlreadyExistsException())
-        );
-    }
-
     @Test
     void getAllUser_ShouldReturn200_WithPagedData() throws Exception {
         var pagedModel = new PagedModel<>(new PageImpl<>(List.of(mockGetCreatePatchUserResponse)));
@@ -150,9 +143,16 @@ class AdminUserControllerTest {
         verify(userService, times(1)).patchForAdmin(eq(userId), any(PatchUserRequest.class));
     }
 
+    private static Stream<Arguments> provideExceptionsForPatch() {
+        return Stream.of(
+                Arguments.of(new UserNotFoundException(99L), 404),
+                Arguments.of(new UserAlreadyExistsException(), 409)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("provideExceptionsForPatch")
-    void updateUser_ShouldReturn404_WhenThrowException(AbstractHttpStatusException ex) throws Exception {
+    void updateUser_ShouldReturn404_WhenThrowException(AbstractHttpStatusException ex, int statusCode) throws Exception {
         long userId = 99L;
         when(userService.patchForAdmin(eq(userId), any(PatchUserRequest.class)))
                 .thenThrow(ex);
@@ -161,7 +161,7 @@ class AdminUserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(patchUserRequest))
                         .with(csrf()))
-                .andExpect(status().is(ex.httpStatus().value()));
+                .andExpect(status().is(statusCode));
 
         verify(userService, times(1)).patchForAdmin(eq(userId), any(PatchUserRequest.class));
     }
