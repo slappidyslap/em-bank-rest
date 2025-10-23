@@ -78,10 +78,9 @@ public class SimpleUserService implements UserService {
         var newPassword = dto.newPassword();
 
         if (!passwordEncoder.matches(oldPassword, authUser.getPassword()))
-            throw new PasswordValidationException("Invalid old password.");
+            throw new PasswordValidationException("Invalid old password");
 
         authUser.setPassword(passwordEncoder.encode(newPassword));
-
         userRepository.save(authUser);
 
         authService.revokeAllUserRefreshTokens(authUser.getId());
