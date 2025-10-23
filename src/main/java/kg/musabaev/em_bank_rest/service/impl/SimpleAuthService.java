@@ -54,19 +54,19 @@ public class SimpleAuthService implements AuthService {
 
     @Override
     @Transactional
-    public AccessAndRefreshTokens login(AuthenticateRequest dto) {
+    public AccessAndRefreshTokensResponse login(AuthenticateRequest dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.email(),
                 dto.password()
         ));
-        return new AccessAndRefreshTokens(
+        return new AccessAndRefreshTokensResponse(
                 jwtUtil.generateAccessToken(dto.email()),
                 jwtUtil.generateRefreshToken(dto.email()));
     }
 
     @Override
     @Transactional
-    public AccessAndRefreshTokens refresh(String refreshToken) {
+    public AccessAndRefreshTokensResponse refresh(String refreshToken) {
         RefreshToken refreshTokenEntity = refreshTokenRepository
                 .findByToken(refreshToken)
                 .orElseThrow(RefreshTokenNotFoundException::new);
@@ -77,7 +77,7 @@ public class SimpleAuthService implements AuthService {
         String email = refreshTokenRepository.findRefreshTokenOwnerEmailByToken(refreshToken)
                 .orElseThrow(() -> new UserNotFoundException(refreshToken, "refresh token"));
         refreshTokenRepository.deleteById(refreshTokenEntity.getId());
-        return new AccessAndRefreshTokens(
+        return new AccessAndRefreshTokensResponse(
                 jwtUtil.generateAccessToken(email),
                 jwtUtil.generateRefreshToken(email)
         );

@@ -6,9 +6,9 @@ public interface AuthService {
 
     GetCreatePatchUserResponse signup(SignupUserRequest dto);
 
-    AccessAndRefreshTokens login(AuthenticateRequest dto);
+    AccessAndRefreshTokensResponse login(AuthenticateRequest dto);
 
-    AccessAndRefreshTokens refresh(String refreshToken);
+    AccessAndRefreshTokensResponse refresh(String refreshToken);
 
     void revokeAllUserRefreshTokens(Long userId);
 }
