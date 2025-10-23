@@ -6,15 +6,16 @@ import kg.musabaev.em_bank_rest.dto.GetCreatePatchCardResponse;
 import kg.musabaev.em_bank_rest.dto.UpdateStatusCardRequest;
 import kg.musabaev.em_bank_rest.entity.CardStatus;
 import kg.musabaev.em_bank_rest.entity.User;
-import kg.musabaev.em_bank_rest.exception.CardExpiredException;
-import kg.musabaev.em_bank_rest.exception.CardNotFoundException;
-import kg.musabaev.em_bank_rest.exception.UserNotFoundException;
+import kg.musabaev.em_bank_rest.exception.*;
 import kg.musabaev.em_bank_rest.security.JwtAuthFilter;
 import kg.musabaev.em_bank_rest.security.Role;
 import kg.musabaev.em_bank_rest.security.SimpleUserDetails;
 import kg.musabaev.em_bank_rest.service.CardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -68,6 +70,14 @@ class AdminCardControllerTest {
                 .owner("ELDIYAROV MUSABAI")
                 .build();
         userDetails = new SimpleUserDetails(User.builder().id(1L).role(Role.ADMIN).build());
+    }
+
+    private static Stream<Arguments> provideExceptionsForPatch() {
+        return Stream.of(
+                Arguments.of(new CardBlockRequestNotFoundException(99L)),
+                Arguments.of(new CardUnsupportedOperationException("")),
+                Arguments.of(new CardExpiredException())
+        );
     }
 
     @Test
@@ -176,20 +186,21 @@ class AdminCardControllerTest {
         verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
     }
 
-    @Test
-    void updateCardStatus_ShouldReturn400_WhenStatusIsExpired() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideExceptionsForPatch")
+    void updateCardStatus_ShouldReturn400_WhenThrowException(AbstractHttpStatusException ex) throws Exception {
         long cardId = 101L;
         var request = new UpdateStatusCardRequest(CardStatus.BLOCKED);
 
         when(cardService.patchStatus(eq(cardId), any(UpdateStatusCardRequest.class), any(SimpleUserDetails.class)))
-                .thenThrow(new CardExpiredException());
+                .thenThrow(ex);
 
         mockMvc.perform(patch(BASE_URL + "/{cardId}", cardId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .with(user(userDetails))
                         .with(csrf()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is(ex.httpStatus().value()));
 
         verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
     }
