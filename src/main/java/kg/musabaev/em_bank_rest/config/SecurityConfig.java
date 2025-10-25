@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/*/users/**").hasRole("USER")
                         .requestMatchers("/api/*/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .csrf(AbstractHttpConfigurer::disable) //todo
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedAuthenticationEntryPoint)
                         .accessDeniedHandler(forbiddenAccessDeniedHandler))

@@ -173,7 +173,7 @@
 				<configuration>
 					<changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
 					<url>jdbc:postgresql://localhost:5432/em_bank_rest</url>
-					<username>postgres</username> <!--TODO как можно из env доставать-->
+					<username>postgres</username>
 					<password>1</password>
 				</configuration>
 			</plugin>
