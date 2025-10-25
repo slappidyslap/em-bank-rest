@@ -17,7 +17,7 @@ public interface CardService {
 
     PagedModel<GetCreatePatchCardResponse> getAllForAdmin(CardSpecification spec, Pageable pageable);
 
-    GetCreatePatchCardResponse patchStatus(Long cardId, UpdateStatusCardRequest newStatus, SimpleUserDetails userDetails);
+    GetCreatePatchCardResponse patchStatusForAdmin(Long cardId, UpdateStatusCardRequest newStatus, SimpleUserDetails userDetails);
 
     void delete(Long id);
 

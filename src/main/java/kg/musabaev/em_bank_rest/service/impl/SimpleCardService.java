@@ -70,9 +70,10 @@ public class SimpleCardService implements CardService {
 
     @Override
     @Transactional
-    public GetCreatePatchCardResponse patchStatus(Long id, UpdateStatusCardRequest dto, SimpleUserDetails userDetails) {
+    public GetCreatePatchCardResponse patchStatusForAdmin(Long id, UpdateStatusCardRequest dto, SimpleUserDetails userDetails) {
         var card = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(id));
+        requireNonExpiredCard(card);
         return switch (dto.status()) {
             case BLOCKED -> {
                 var request = cardBlockRequestRepository.findByCardToBlock(card)
@@ -94,7 +95,7 @@ public class SimpleCardService implements CardService {
                 card.setStatus(CardStatus.ACTIVE);
                 yield cardMapper.toPatchCardResponse(cardRepository.save(card));
             }
-            case EXPIRED -> throw new CardExpiredException();
+            case EXPIRED -> throw new CardUnsupportedOperationException("Given card already expired");
         };
     }
 
@@ -125,7 +126,7 @@ public class SimpleCardService implements CardService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (cardRepository.existsById(id))
+        if (!cardRepository.existsById(id))
                 throw new CardNotFoundException(id);
         cardRepository.deleteById(id);
     }
@@ -143,12 +144,13 @@ public class SimpleCardService implements CardService {
                 .orElseThrow(() -> new CardNotFoundException("toCardNumber"));
 
         if (fromCard.getStatus() != CardStatus.ACTIVE)
-            throw new InactiveCardException();
+            throw new InactiveCardException("Source card must be active");
+        if (toCard.getStatus() != CardStatus.ACTIVE)
+            throw new InactiveCardException("Destination card must be active");
         if (!fromCard.getUser().equals(authUser) || !toCard.getUser().equals(authUser))
             throw new CardOwnershipException("Both cards must belong to one user");
-        if (fromCard.getBalance().compareTo(dto.amount()) < 0) {
+        if (fromCard.getBalance().compareTo(dto.amount()) < 0)
             throw new InsufficientFundsException();
-        }
 
         fromCard.setBalance(fromCard.getBalance().subtract(dto.amount()));
         toCard.setBalance(toCard.getBalance().add(dto.amount()));
@@ -178,5 +180,9 @@ public class SimpleCardService implements CardService {
         if (!card.getUser().equals(authUser))
             throw new CardOwnershipException("Card by " + cardId + " does not belong to authorized user");
         return card;
+    }
+
+    private void requireNonExpiredCard(Card card) {
+        if (card.getStatus().equals(CardStatus.EXPIRED)) throw new CardExpiredException();
     }
 }

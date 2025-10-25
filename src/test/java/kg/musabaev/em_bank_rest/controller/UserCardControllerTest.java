@@ -201,7 +201,7 @@ class UserCardControllerTest {
         return Stream.of(
                 Arguments.of(new SelfTransferNotAllowedException(), 400),
                 Arguments.of(new CardNotFoundException(""), 404),
-                Arguments.of(new InactiveCardException(), 400),
+                Arguments.of(new InactiveCardException(""), 400),
                 Arguments.of(new CardOwnershipException(""), 400),
                 Arguments.of(new InsufficientFundsException(), 400)
         );

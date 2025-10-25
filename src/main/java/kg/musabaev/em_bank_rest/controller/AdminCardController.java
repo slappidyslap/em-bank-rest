@@ -55,6 +55,6 @@ public class AdminCardController {
             @Positive @PathVariable Long cardId,
             @RequestBody UpdateStatusCardRequest dto,
             @AuthenticationPrincipal SimpleUserDetails userDetails) {
-        return cardService.patchStatus(cardId, dto, userDetails);
+        return cardService.patchStatusForAdmin(cardId, dto, userDetails);
     }
 }

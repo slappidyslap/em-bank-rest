@@ -7,7 +7,7 @@ public class InactiveCardException extends AbstractHttpStatusException {
     public HttpStatus httpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
-    public InactiveCardException() {
-        super("Source card must be active");
+    public InactiveCardException(String s) {
+        super(s);
     }
 }

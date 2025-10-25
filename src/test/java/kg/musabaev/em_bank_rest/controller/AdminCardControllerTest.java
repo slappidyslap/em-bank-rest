@@ -165,7 +165,7 @@ class AdminCardControllerTest {
         long cardId = 101L;
         var request = new UpdateStatusCardRequest(CardStatus.BLOCKED);
 
-        when(cardService.patchStatus(eq(cardId), any(UpdateStatusCardRequest.class), any(SimpleUserDetails.class)))
+        when(cardService.patchStatusForAdmin(eq(cardId), any(UpdateStatusCardRequest.class), any(SimpleUserDetails.class)))
                 .thenReturn(mockGetCreatePatchCardResponse);
 
         mockMvc.perform(patch(BASE_URL + "/{cardId}", cardId)
@@ -175,7 +175,7 @@ class AdminCardControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
 
-        verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
+        verify(cardService, times(1)).patchStatusForAdmin(eq(cardId), any(), any());
     }
 
     private static Stream<Arguments> provideExceptionsForPatch() {
@@ -192,7 +192,7 @@ class AdminCardControllerTest {
         long cardId = 101L;
         var request = new UpdateStatusCardRequest(CardStatus.BLOCKED);
 
-        when(cardService.patchStatus(eq(cardId), any(UpdateStatusCardRequest.class), any(SimpleUserDetails.class)))
+        when(cardService.patchStatusForAdmin(eq(cardId), any(UpdateStatusCardRequest.class), any(SimpleUserDetails.class)))
                 .thenThrow(ex);
 
         mockMvc.perform(patch(BASE_URL + "/{cardId}", cardId)
@@ -202,6 +202,6 @@ class AdminCardControllerTest {
                         .with(csrf()))
                 .andExpect(status().is(statusCode));
 
-        verify(cardService, times(1)).patchStatus(eq(cardId), any(), any());
+        verify(cardService, times(1)).patchStatusForAdmin(eq(cardId), any(), any());
     }
 }
