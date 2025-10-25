@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/2025/10/16/create_refresh_token_table.yaml
   - include:
       file: db/changelog/2025/10/21/drop_processor_user_id_not_null_constrains.yaml
+  - include:
+      file: db/changelog/2025/10/26/add_default_credentials.yaml
