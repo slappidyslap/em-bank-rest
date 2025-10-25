@@ -1,16 +1,19 @@
 package kg.musabaev.em_bank_rest.service.impl;
 
-import kg.musabaev.em_bank_rest.dto.*;
+import kg.musabaev.em_bank_rest.dto.AccessAndRefreshTokensResponse;
+import kg.musabaev.em_bank_rest.dto.AuthenticateRequest;
+import kg.musabaev.em_bank_rest.dto.GetCreatePatchUserResponse;
+import kg.musabaev.em_bank_rest.dto.SignupUserRequest;
 import kg.musabaev.em_bank_rest.entity.User;
 import kg.musabaev.em_bank_rest.exception.RefreshTokenExpiredException;
 import kg.musabaev.em_bank_rest.exception.RefreshTokenNotFoundException;
 import kg.musabaev.em_bank_rest.exception.UserAlreadyExistsException;
 import kg.musabaev.em_bank_rest.exception.UserNotFoundException;
 import kg.musabaev.em_bank_rest.mapper.UserMapper;
+import kg.musabaev.em_bank_rest.repository.RefreshTokenRepository;
 import kg.musabaev.em_bank_rest.repository.UserRepository;
 import kg.musabaev.em_bank_rest.security.JwtUtil;
 import kg.musabaev.em_bank_rest.security.RefreshToken;
-import kg.musabaev.em_bank_rest.repository.RefreshTokenRepository;
 import kg.musabaev.em_bank_rest.security.Role;
 import kg.musabaev.em_bank_rest.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +39,7 @@ public class SimpleAuthService implements AuthService {
     @Override
     @Transactional
     public GetCreatePatchUserResponse signup(SignupUserRequest dto) {
-        Optional<User> existingUser = userRepository.findByEmail(dto.email());
-        if (existingUser.isPresent())
+        if (userRepository.existsByEmail(dto.email()))
             throw new UserAlreadyExistsException();
 
         var user = User.builder()
