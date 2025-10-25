@@ -1,13 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/em_bank_rest
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/em_bank_rest
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:1}
 management:
   endpoints:
     web:
       exposure:
         include:
           - health
+app:
+  jwt-secret: mominfactilovefrogsfrogsfrogsfrogsfrogsfrogs
+  access-token-expiration: "#{1000 * 60 * 60}"
+  refresh-token-expiration: "#{1000 * 60 * 60 * 24 * 7}"
