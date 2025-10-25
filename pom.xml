@@ -93,7 +93,6 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 
-
 		<!--	Test	-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

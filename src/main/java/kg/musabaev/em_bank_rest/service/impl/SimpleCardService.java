@@ -127,7 +127,7 @@ public class SimpleCardService implements CardService {
     @Transactional
     public void delete(Long id) {
         if (!cardRepository.existsById(id))
-                throw new CardNotFoundException(id);
+            throw new CardNotFoundException(id);
         cardRepository.deleteById(id);
     }
 

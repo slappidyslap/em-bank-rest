@@ -116,6 +116,7 @@ class SimpleCardServiceTest {
 
     @Test
     @DisplayName("Get All For Admin: Should return page of cards")
+    @SuppressWarnings("unchecked")
     void getAllForAdmin_ShouldReturnPageOfCards() {
         var pageable = Pageable.ofSize(10);
         var cardList = List.of(activeCard, blockedCard);

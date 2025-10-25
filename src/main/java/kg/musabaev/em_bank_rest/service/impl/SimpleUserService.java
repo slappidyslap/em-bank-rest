@@ -49,13 +49,6 @@ public class SimpleUserService implements UserService {
         return patchUser(dto, user);
     }
 
-    private GetCreatePatchUserResponse patchUser(PatchUserRequest dto, User user) {
-        userMapper.patch(dto, user);
-        var persistedUser = userRepository.saveAndFlush(user);
-        authService.revokeAllUserRefreshTokens(user.getId());
-        return userMapper.toPatchUserResponse(persistedUser);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public GetCreatePatchUserResponse getByIdForUser(SimpleUserDetails userDetails) {
@@ -89,8 +82,8 @@ public class SimpleUserService implements UserService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (userRepository.existsById(id))
-                throw new UserNotFoundException(id);
+        if (!userRepository.existsById(id))
+            throw new UserNotFoundException(id);
         userRepository.deleteById(id);
     }
 
@@ -99,5 +92,12 @@ public class SimpleUserService implements UserService {
     public GetCreatePatchUserResponse getByIdForAdmin(Long id) {
         return userMapper.toGetUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    private GetCreatePatchUserResponse patchUser(PatchUserRequest dto, User user) {
+        userMapper.patch(dto, user);
+        var persistedUser = userRepository.saveAndFlush(user);
+        authService.revokeAllUserRefreshTokens(user.getId());
+        return userMapper.toPatchUserResponse(persistedUser);
     }
 }
