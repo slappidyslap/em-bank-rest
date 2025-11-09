@@ -96,10 +96,28 @@ export DB_PASSWORD=1
 
 Если миграции Liquibase включают начальные данные, используйте следующие учетные записи для тестирования:
 
-| Роль  | Email           | Пароль |
-|:------|:----------------|:-------|
-| ADMIN | admin@admin.com | 1      |
-| USER  | user@user.com   | 1      |
+<table>
+  <thead>
+    <tr>
+      <th>Роль</th>
+      <th>Email</th>
+      <th>Пароль</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ADMIN</td>
+      <td>admin@admin.com</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>USER</td>
+      <td>user@user.com</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ---
 
