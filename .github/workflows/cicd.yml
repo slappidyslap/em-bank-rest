@@ -57,6 +57,7 @@ jobs:
         publish_branch: master
         publish_dir: ./target/site/jacoco
         destination_dir: em-bank-rest/jacoco
+        commit_message: publish em-bank-rest code coverage report
 
   deploy-app:
     if: ${{ github.event_name == 'push' }}
