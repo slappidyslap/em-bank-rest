@@ -44,7 +44,19 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-  deploy:
+  deploy-code-coverage-report:
+    if: ${{ github.event_name == 'push' }}
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Publish Jacoco report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/jacoco
+        destination_dir: ${{ github.event.repository.name }}
+
+  deploy-app:
     if: ${{ github.event_name == 'push' }}
     needs: test
     runs-on: ubuntu-latest
