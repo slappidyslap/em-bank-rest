@@ -1,8 +1,8 @@
 # https://render.com/docs/blueprint-spec#databases
 services:
   - type: web
+    runtime: docker
     name: em-bank-rest
-    env: docker
     plan: free
     region: frankfurt
     dockerfilePath: ./Dockerfile
