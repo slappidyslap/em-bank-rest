@@ -36,29 +36,8 @@ jobs:
       with:
         report_paths: '**/target/surefire-reports/TEST-*.xml'
 
-    - name: Cache local Maven repository
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
-  display-target-folder-tree:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Display folder tree
-        run: |
-          sudo apt install tree
-          tree
-
-  deploy-code-coverage-report:
-    if: ${{ github.event_name == 'push' }}
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
     - name: Publish Jacoco report to GitHub Pages
+      if: ${{ github.event_name == 'push' }}
       uses: peaceiris/actions-gh-pages@v4
       with:
         personal_token: ${{ secrets.PERSONAL_TOKEN }}
@@ -67,6 +46,14 @@ jobs:
         publish_dir: ./target/site/jacoco/
         destination_dir: ./em-bank-rest/jacoco/
         commit_message: publish em-bank-rest code coverage report
+
+    - name: Cache local Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
 
   deploy-app:
     if: ${{ github.event_name == 'push' }}
