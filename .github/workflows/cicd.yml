@@ -52,7 +52,7 @@ jobs:
         uses: jaywcjlove/github-action-folder-tree@main
         id: tree
         with:
-          path: ./target
+          path: .
           depth: 10
 
   deploy-code-coverage-report:
