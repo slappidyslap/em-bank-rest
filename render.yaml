@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: em-bank-rest
+    env: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        fromService:
+          name: em-bank-db
+          type: postgresql
+          property: connectionString
+      - key: DB_PORT
+        value: "5432"
+      - key: SPRING_PROFILES_ACTIVE
+        value: dev
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+
+  - type: postgresql
+    name: em-bank-db
+    plan: free
+    region: frankfurt
