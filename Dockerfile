@@ -6,6 +6,7 @@ COPY .mvn .mvn
 RUN chmod +x mvnw
 RUN --mount=type=cache,target=/root/.m2 ./mvnw dependency:go-offline
 COPY src src
+COPY docs docs
 RUN --mount=type=cache,target=/root/.m2 ./mvnw clean package -Dmaven.test.skip=true
 
 FROM eclipse-temurin:21-jre-alpine

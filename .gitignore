@@ -33,3 +33,6 @@ build/
 .vscode/
 amplicode.xml
 src/main/resources/static/openapi/*
+
+*.swo
+*.swp
