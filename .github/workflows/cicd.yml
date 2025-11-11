@@ -45,6 +45,7 @@ jobs:
           ${{ runner.os }}-maven-
 
   deploy:
+    if: ${{ github.event_name == 'push' }}
     needs: test
     runs-on: ubuntu-latest
     steps:
