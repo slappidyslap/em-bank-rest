@@ -47,16 +47,16 @@ jobs:
   deploy-code-coverage-report:
     if: ${{ github.event_name == 'push' }}
     needs: test
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
     - name: Publish Jacoco report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.PERSONAL_TOKEN }}
+        external_repository: slappidyslap/slappidyslap.github.io
+        publish_branch: master
         publish_dir: ./target/site/jacoco
-        destination_dir: ${{ github.event.repository.name }}
+        destination_dir: em-bank-rest/jacoco
 
   deploy-app:
     if: ${{ github.event_name == 'push' }}
