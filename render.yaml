@@ -7,19 +7,32 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: DB_HOST
-        fromService:
-          name: em-bank-db
-          type: postgresql
-          property: connectionString
+        fromDatabase:
+          name: em_bank_db
+          property: host
       - key: DB_PORT
-        value: "5432"
+        fromDatabase:
+          name: em_bank_db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: em_bank_db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: em_bank_db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: em_bank_db
+          property: password
       - key: SPRING_PROFILES_ACTIVE
         value: dev
     healthCheckPath: /actuator/health
     autoDeploy: true
 
 databases:
-  - name: em-bank-db
+  - name: em_bank_db
     postgresMajorVersion: '17'
     region: frankfurt
     plan: free
