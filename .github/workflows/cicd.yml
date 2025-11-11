@@ -47,6 +47,8 @@ jobs:
   deploy-code-coverage-report:
     if: ${{ github.event_name == 'push' }}
     needs: test
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
     - name: Publish Jacoco report to GitHub Pages
