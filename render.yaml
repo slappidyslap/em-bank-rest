@@ -29,8 +29,10 @@ services:
           property: password
       - key: SPRING_PROFILES_ACTIVE
         value: dev
+      - key: PORT # https://render.com/docs/web-services#port-binding
+        value: 8080
     healthCheckPath: /actuator/health
-    autoDeploy: false 
+    autoDeployTrigger: 'off'
 
 databases:
   - name: em_bank_db
