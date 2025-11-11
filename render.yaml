@@ -1,3 +1,4 @@
+# https://render.com/docs/blueprint-spec#databases
 services:
   - type: web
     name: em-bank-rest
@@ -29,7 +30,7 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: dev
     healthCheckPath: /actuator/health
-    autoDeploy: true
+    autoDeploy: false 
 
 databases:
   - name: em_bank_db

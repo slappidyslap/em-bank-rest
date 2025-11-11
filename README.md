@@ -80,7 +80,7 @@ export DB_PASSWORD=1
 
 После успешного запуска проекта документация OpenAPI доступна по адресу:
 
-**Swagger UI:** `http://localhost:8080/swagger-ui.html`
+**Swagger UI:** `http://<address>/swagger-ui.html`
 
 Здесь вы найдете все эндпоинты для аутентификации, регистрации, управления пользователями, картами и переводами.
 
