@@ -52,7 +52,7 @@ jobs:
     - name: Publish Jacoco report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
-        github_token: ${{ secrets.PERSONAL_TOKEN }}
+        personal_token: ${{ secrets.PERSONAL_TOKEN }}
         external_repository: slappidyslap/slappidyslap.github.io
         publish_branch: master
         publish_dir: ./target/site/jacoco
