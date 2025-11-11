@@ -36,4 +36,4 @@ databases:
     postgresMajorVersion: '17'
     region: frankfurt
     plan: free
-    databaseName: em-bank-rest
+    databaseName: em_bank_rest
