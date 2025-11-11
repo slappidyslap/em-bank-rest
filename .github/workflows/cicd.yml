@@ -45,6 +45,7 @@ jobs:
           ${{ runner.os }}-maven-
 
   deploy:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to Render.com
