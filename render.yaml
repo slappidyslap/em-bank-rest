@@ -18,7 +18,9 @@ services:
     healthCheckPath: /actuator/health
     autoDeploy: true
 
-  - type: postgresql
-    name: em-bank-db
-    plan: free
+databases:
+  - name: em-bank-db
+    postgresMajorVersion: '17'
     region: frankfurt
+    plan: free
+    databaseName: em-bank-rest
