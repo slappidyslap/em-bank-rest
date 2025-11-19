@@ -97,10 +97,10 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/em-bank-rest:${{steps.extract_version.outputs.VERSION}}
-            ${{ secrets.DOCKERHUB_USERNAME }}/em-bank-rest:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/em-bank-rest:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/em-bank-rest:buildcache,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/em-bank-rest:${{steps.extract_version.outputs.VERSION}}
+            ${{ secrets.DOCKER_USERNAME }}/em-bank-rest:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache,mode=max
 
   deploy-app:
     if: ${{ github.event_name == 'push' }}
