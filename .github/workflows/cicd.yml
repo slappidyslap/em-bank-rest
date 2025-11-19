@@ -99,8 +99,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/em-bank-rest:${{steps.extract_version.outputs.VERSION}}
             ${{ secrets.DOCKER_USERNAME }}/em-bank-rest:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache,mode=max
+#          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache
+#          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/em-bank-rest:buildcache,mode=max
 
   deploy-app:
     if: ${{ github.event_name == 'push' }}
